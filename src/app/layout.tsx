@@ -1,5 +1,7 @@
 import "@/styles/globals.css";
 
+import Providers from "@/components/Providers";
+
 export const metadata = {
   title: "Weather App",
   description: "Weather App",
@@ -12,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="h-screen bg-orange-200 m-10">{children}</body>
+      <body className="h-screen bg-orange-200 m-10">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
