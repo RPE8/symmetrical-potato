@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { format } from "date-fns";
+import SunsetSunriseChart from "@/components/SunsetSunriseChart";
 
 interface WeatherSunsetSunsriseBlockProps {
   sunset: Date;
@@ -7,8 +8,14 @@ interface WeatherSunsetSunsriseBlockProps {
   currentTime: Date;
 }
 
-const WeatherSunsetSunsriseBlock = ({}) => {
-  return <div>WeatherSunsetSunsriseBlock</div>;
+const WeatherSunsetSunsriseBlock = ({
+  ...props
+}: WeatherSunsetSunsriseBlockProps) => {
+  return (
+    <div className="h-[500px]">
+      <SunsetSunriseChart {...props} />
+    </div>
+  );
 };
 
 export default WeatherSunsetSunsriseBlock;
