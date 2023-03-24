@@ -3,20 +3,30 @@ import { createContext, useReducer } from "react";
 
 const SET_LOCATION = "SET_LOCATION";
 
-const initialState = {
-  location: "",
+const initialState: State = {
+  locationSearch: null,
+  selectedLocation: null,
+  temperature: null,
+  weather: null,
 };
 
-type State = typeof initialState;
+type LocationSearch = Nullable<string>;
+
+type State = {
+  locationSearch: LocationSearch;
+  selectedLocation: Nullable<string>;
+  temperature: Nullable<string>;
+  weather: Nullable<Weather>;
+};
 
 type ACTIONTYPE =
-  | { type: typeof SET_LOCATION; payload: string }
+  | { type: typeof SET_LOCATION; payload: LocationSearch }
   | { type: "DEFAULT" };
 
 const reducer = (state: State, action: ACTIONTYPE) => {
   switch (action.type) {
     case SET_LOCATION:
-      return { ...state, location: action.payload };
+      return { ...state, locationSearch: action.payload };
     default:
       throw new Error("Invalid action type");
   }

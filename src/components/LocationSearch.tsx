@@ -6,11 +6,11 @@ import { Icons } from "@/components/Icons";
 import Input from "@/components/ui/Input";
 import { WeatherContext } from "@/components/WeatherContext";
 
-interface SearchProps extends HTMLAttributes<HTMLElement> {}
+interface LocationSearchProps extends HTMLAttributes<HTMLElement> {}
 
-const Search: FC<SearchProps> = () => {
+const LocationSearch: FC<LocationSearchProps> = () => {
   const { state, dispatch } = useContext(WeatherContext);
-  const [showError, setSHowError] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
   return (
     <Form.Root>
       <Form.Field className="grid grid-rows-2" name="location">
@@ -23,7 +23,7 @@ const Search: FC<SearchProps> = () => {
             <Input
               placeholder="Enter a location"
               required
-              value={state.location}
+              value={state.locationSearch ? state.locationSearch : ""}
               onChange={(event) => {
                 event.preventDefault();
                 dispatch({
@@ -44,4 +44,4 @@ const Search: FC<SearchProps> = () => {
   );
 };
 
-export default Search;
+export default LocationSearch;
