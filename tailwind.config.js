@@ -13,6 +13,7 @@ module.exports = {
       colors: {
         "block-info": "#FDFCFC",
         "label-description": "#C4C4C4",
+        "value-description": "#9A9A9A",
       },
     },
   },

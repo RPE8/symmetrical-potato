@@ -1,5 +1,6 @@
 import { FC } from "react";
 import WeatherInfoBlockContainer from "@/components/WeatherBlockContainer";
+import InfoBlockItem from "./InfoBlockItem";
 import { format } from "date-fns";
 
 interface WeatherInfoAdditionalProps {
@@ -18,9 +19,13 @@ const WeatherInfoAdditional = ({
   return (
     <WeatherInfoBlockContainer>
       <div className="flex justify-between">
-        <span>{format(date, "hh:mm a")} </span>
-        <span>{precipitationPercent}%</span> <span>{humidityPercent}%</span>
-        <span>{windSpeed}m/s</span>
+        <InfoBlockItem valueName="Time" value={format(date, "hh:mm a")} />
+        <InfoBlockItem
+          valueName="Rain. chance"
+          value={`${precipitationPercent} %`}
+        />
+        <InfoBlockItem valueName="Hum." value={`${humidityPercent} %`} />
+        <InfoBlockItem valueName="Wind" value={`${windSpeed} m/s`} />
       </div>
     </WeatherInfoBlockContainer>
   );

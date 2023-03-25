@@ -9,7 +9,7 @@ const WeatherInfoBlockContainer = ({
   const { className, ...rest } = props;
   return (
     <div
-      className={`flex flex-col bg-block-info rounded-2xl px-5 ${className}`}
+      className={`flex flex-col bg-block-info rounded-2xl px-5 my-3 ${className}`}
       {...rest}
     >
       {children}
