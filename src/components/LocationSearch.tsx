@@ -19,7 +19,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
           <div className="flex items-center justify-center w-full h-full p-1">
             <Form.Control asChild>
               <Input
-                className="placeholder:text-label-description bg-transparent flex-grow h-full font-weight-400"
+                className="placeholder:text-label-description bg-transparent flex-grow h-full font-weight-400 focus-visible:outline-none text-base font-normal"
                 placeholder="Enter a location"
                 required
                 value={state.locationSearch ? state.locationSearch : ""}
