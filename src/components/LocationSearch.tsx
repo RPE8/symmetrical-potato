@@ -4,6 +4,7 @@ import { FC, HTMLAttributes, useContext, useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import { Icons } from "@/components/Icons";
 import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import { WeatherContext } from "@/components/WeatherContext";
 import WeatherBlockContainer from "@/components/WeatherBlockContainer";
 
@@ -19,7 +20,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
           <div className="flex items-center justify-center w-full h-full p-1">
             <Form.Control asChild>
               <Input
-                className="placeholder:text-label-description bg-transparent flex-grow h-full font-weight-400 focus-visible:outline-none text-base font-normal"
+                className="w-full h-full text-black"
                 placeholder="Enter a location"
                 required
                 value={state.locationSearch ? state.locationSearch : ""}
@@ -33,9 +34,9 @@ const LocationSearch: FC<LocationSearchProps> = () => {
               />
             </Form.Control>
             <Form.Submit asChild>
-              <button className="flex items-center justify-center h-5 w-5">
-                <Icons.Search className="stroke-label-description" />
-              </button>
+              <Button size="sm">
+                <Icons.Search />
+              </Button>
             </Form.Submit>
           </div>
         </Form.Field>

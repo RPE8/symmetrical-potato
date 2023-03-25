@@ -13,12 +13,10 @@ const InfoBlockItem = ({
 }: InfoBlockItemProps) => {
   return (
     <div className="flex flex-col items-center" {...props}>
-      <span className="text-xs font-medium text-label-description">
+      <span className="text-xs font-medium text-gray-c2 uppercase">
         {valueName}
       </span>
-      <span className="text-sm font-semibold text-value-description">
-        {value}
-      </span>
+      <span className="text-sm font-semibold text-gray-c3">{value}</span>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { FC } from "react";
 import { format } from "date-fns";
 import SunsetSunriseChart from "@/components/SunsetSunriseChart";
 import WeatherInfoBlockContainer from "@/components/WeatherBlockContainer";
+import SunsetSunriseBlockItem from "@/components/SunsetSunriseBlockItem";
 
 interface WeatherSunsetSunsriseBlockProps {
   sunset: Date;
@@ -13,20 +14,26 @@ const WeatherSunsetSunsriseBlock = ({
   ...props
 }: WeatherSunsetSunsriseBlockProps) => {
   return (
-    <WeatherInfoBlockContainer>
+    <WeatherInfoBlockContainer className="gap-y-1">
+      <h3 className="text-xs font-normal text-gray-c2 uppercase">
+        {" "}
+        Sunset & Sunrise{" "}
+      </h3>
       <SunsetSunriseChart {...props} />
-      <span>
-        Length of the day: {format(props.sunset, "h")}H{" "}
-        {format(props.sunset, "m")}M
-      </span>
-      <span>
-        Length of the night: {format(props.sunrise, "h")}H{" "}
-        {format(props.sunset, "m")}M
-      </span>
-      <span>
-        Remaining daylight: {format(props.sunset, "h")}H
-        {format(props.sunset, "m")}M{" "}
-      </span>
+      <div>
+        <SunsetSunriseBlockItem
+          value={`${format(props.sunset, "h")}H ${format(props.sunset, "m")}M`}
+          valueName="Length of the day"
+        />
+        <SunsetSunriseBlockItem
+          value={`${format(props.sunset, "h")}H ${format(props.sunset, "m")}M`}
+          valueName="Length of the night"
+        />
+        <SunsetSunriseBlockItem
+          value={`${format(props.sunset, "h")}H ${format(props.sunset, "m")}M`}
+          valueName="Remaining daylight"
+        />
+      </div>
     </WeatherInfoBlockContainer>
   );
 };
