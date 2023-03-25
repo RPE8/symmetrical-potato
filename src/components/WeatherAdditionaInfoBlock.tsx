@@ -1,4 +1,5 @@
 import { FC } from "react";
+import WeatherInfoBlockContainer from "@/components/WeatherInfoBlockContainer";
 import { format } from "date-fns";
 
 interface WeatherInfoAdditionalProps {
@@ -15,11 +16,13 @@ const WeatherInfoAdditional = ({
   windSpeed,
 }: WeatherInfoAdditionalProps) => {
   return (
-    <div className="flex justify-between">
-      <span>{format(date, "hh:mm a")} </span>
-      <span>{precipitationPercent}%</span> <span>{humidityPercent}%</span>
-      <span>{windSpeed}m/s</span>
-    </div>
+    <WeatherInfoBlockContainer>
+      <div className="flex justify-between">
+        <span>{format(date, "hh:mm a")} </span>
+        <span>{precipitationPercent}%</span> <span>{humidityPercent}%</span>
+        <span>{windSpeed}m/s</span>
+      </div>
+    </WeatherInfoBlockContainer>
   );
 };
 
