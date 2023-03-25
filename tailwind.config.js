@@ -12,6 +12,7 @@ module.exports = {
     extend: {
       colors: {
         "block-info": "#FDFCFC",
+        "label-description": "#C4C4C4",
       },
     },
   },

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { format } from "date-fns";
 import SunsetSunriseChart from "@/components/SunsetSunriseChart";
-import WeatherInfoBlockContainer from "@/components/WeatherInfoBlockContainer";
+import WeatherInfoBlockContainer from "@/components/WeatherBlockContainer";
 
 interface WeatherSunsetSunsriseBlockProps {
   sunset: Date;

@@ -29,7 +29,7 @@ const Main: FC<MainProps> = ({}) => {
           windSpeed={10}
         />
       </section>
-      <section className="h-[500px]">
+      <section>
         <WeatherSunsetSunsriseBlock
           sunset={new Date()}
           sunrise={new Date()}

@@ -5,7 +5,7 @@ interface HeaderProps extends HTMLAttributes<HTMLElement> {}
 
 const Header: FC<HeaderProps> = ({ children }) => {
   return (
-    <header className="h-14 w-full flex items-center border border-solid border-blue-100">
+    <header className="max-h-12 h-auto w-full flex items-center overflow-hidden">
       <LocationSearch />
     </header>
   );

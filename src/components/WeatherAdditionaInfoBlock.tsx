@@ -1,5 +1,5 @@
 import { FC } from "react";
-import WeatherInfoBlockContainer from "@/components/WeatherInfoBlockContainer";
+import WeatherInfoBlockContainer from "@/components/WeatherBlockContainer";
 import { format } from "date-fns";
 
 interface WeatherInfoAdditionalProps {
