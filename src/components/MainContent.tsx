@@ -3,34 +3,105 @@
 import { HTMLAttributes, useContext, useEffect } from "react";
 
 import useSWR from "swr";
+import z from "zod";
 
-import WeatherInfoMain from "@/components/WeatherMainInfoBlock";
+import WeatherMainBlock from "@/components/WeatherMainBlock";
 import WeatherInfoAdditional from "@/components/WeatherAdditionaInfoBlock";
 import WeatherSunsetSunsriseBlock from "@/components/WeatherSunsetSunsriseBlock";
+import { Weather, validWeatherValues } from "@/utils/constants";
 import { WeatherContext } from "@/context/WeatherContext";
 
 interface MainProps extends HTMLAttributes<HTMLElement> {}
 
 const key = process.env.NEXT_PUBLIC_API_KEY;
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+const fetcher = (url: string) =>
+  fetch(url).then(async (res) => {
+    const data = await res.json();
+    if (!res.ok) {
+      const error = new Error("An error occurred while fetching the data.");
+      return Promise.reject(error);
+    }
+    return weatherSchema.parse(data);
+  });
+
+const zodWeather = z.enum(validWeatherValues);
+const weatherSchema = z.object({
+  main: z.object({
+    temp: z.number(),
+    humidity: z.number(),
+  }),
+  weather: z.array(
+    z.object({
+      main: zodWeather,
+      description: z.string(),
+    })
+  ),
+});
 
 const Main = ({}: MainProps) => {
   const { state, dispatch } = useContext(WeatherContext);
   console.log(state.searchLocation);
+  //   const error = undefined;
+  //   const data = {
+  //     coord: {
+  //       lon: -0.1257,
+  //       lat: 51.5085,
+  //     },
+  //     weather: [
+  //       {
+  //         id: 804,
+  //         main: "Clouds",
+  //         description: "overcast clouds",
+  //         icon: "04d",
+  //       },
+  //     ],
+  //     base: "stations",
+  //     main: {
+  //       temp: 8.62,
+  //       feels_like: 6.8,
+  //       temp_min: 7.14,
+  //       temp_max: 9.88,
+  //       pressure: 1003,
+  //       humidity: 91,
+  //     },
+  //     visibility: 10000,
+  //     wind: {
+  //       speed: 3.09,
+  //       deg: 360,
+  //     },
+  //     clouds: {
+  //       all: 100,
+  //     },
+  //     dt: 1679829575,
+  //     sys: {
+  //       type: 2,
+  //       id: 2075535,
+  //       country: "GB",
+  //       sunrise: 1679809822,
+  //       sunset: 1679854923,
+  //     },
+  //     timezone: 3600,
+  //     id: 2643743,
+  //     name: "London",
+  //     cod: 200,
+  //   };
   const { data, error } = useSWR(
     state.searchLocation === "London"
       ? `https://api.openweathermap.org/data/2.5/weather?q=${state.searchLocation}&appid=${key}`
       : null,
     fetcher
   );
+  console.log(data);
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   return (
     <main>
       <section>
-        <WeatherInfoMain
-          weather={state.weatherData?.type ?? "Thunderstorm"}
-          temperature={state.weatherData?.current.temp ?? 0}
+        <WeatherMainBlock
+          weather={data.weather[0].main}
+          weatherDescription={data.weather[0].description}
+          temperature={data.main.temp}
           temperatureUnit="C"
           location={state.location}
         />

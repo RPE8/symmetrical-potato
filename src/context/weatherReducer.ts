@@ -10,7 +10,7 @@ export interface WeatherState {
 const initialState: WeatherState = {
   location: "London",
   searchLocation: "London",
-  weatherData: {},
+	weatherData: {},
 };
 
 export const weatherReducer = (
