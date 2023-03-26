@@ -1,18 +1,21 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
-import { HTMLAttributes, InputHTMLAttributes, forwardRef } from "react";
+import { InputHTMLAttributes, forwardRef } from "react";
 
 const inputVariants = cva(
-  "placeholder:text-gray-c2 font-weight-400 focus-visible:outline-none text-base font-normal",
+  "placeholder:text-gray-c2 font-weight-400 focus-visible:outline-none text-base font-normal bg-transparent",
   {
     variants: {
-      variant: {
-        default: "bg-transparent",
-        underline: "bg-transparent border-b border-gray-c2",
+      intent: {
+        primary: "text-gray-c4",
+        secondary: "text-gray-c3",
+      },
+      fullWidth: {
+        true: "w-full",
       },
     },
     defaultVariants: {
-      variant: "default",
+      intent: "primary",
     },
   }
 );
@@ -22,10 +25,10 @@ interface InputProps
     VariantProps<typeof inputVariants> {}
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, intent, fullWidth = false, ...props }, ref) => {
     return (
       <input
-        className={twMerge(className, inputVariants({ variant }))}
+        className={twMerge(className, inputVariants({ intent, fullWidth }))}
         {...props}
       ></input>
     );

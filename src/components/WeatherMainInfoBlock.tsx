@@ -1,11 +1,10 @@
 import { FC } from "react";
 import { Icons, Icon } from "@/components/Icons";
 
-type WeatherInfo = {
-  description: string;
+type WeatherIcon = {
   icon: React.ReactNode;
 };
-type WeathersInfoMap = Record<Weather, WeatherInfo>;
+type WeatherIconMap = Record<Weather, WeatherIcon>;
 
 interface WeatherInfoMainProps {
   temperature: number;
@@ -16,22 +15,27 @@ interface WeatherInfoMainProps {
 
 const iconClasses = "h-32 w-32";
 
-const weatherInfo: WeathersInfoMap = {
-  sunny: {
-    description: "Sunny",
-    icon: <Icons.Sun className={iconClasses + " stroke-orange-400"} />,
+const weatherInfo: WeatherIconMap = {
+  Atmosphere: {
+    icon: <Icons.CloudFog />,
   },
-  cloudy: {
-    description: "Cloudy",
-    icon: <Icons.Cloudy className={iconClasses} />,
+  Thunderstorm: {
+    icon: <Icons.CloudLightning className={iconClasses} />,
   },
-  rainy: {
-    description: "Rainy",
+  Rain: {
     icon: <Icons.CloudRain className={iconClasses} />,
   },
-  snowy: {
-    description: "Snowy",
+  Snow: {
     icon: <Icons.CloudSnow className={iconClasses} />,
+  },
+  Clouds: {
+    icon: <Icons.Cloudy className={iconClasses} />,
+  },
+  Clear: {
+    icon: <Icons.Sun className={iconClasses} />,
+  },
+  Drizzle: {
+    icon: <Icons.CloudDrizzle className={iconClasses} />,
   },
 };
 

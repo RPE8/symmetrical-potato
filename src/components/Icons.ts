@@ -1,4 +1,13 @@
-import { Cloudy, Search, Sun, CloudRain, CloudSnow } from "lucide-react";
+import {
+  Cloudy,
+  Search,
+  Sun,
+  CloudRain,
+  CloudSnow,
+  CloudFog,
+  CloudLightning,
+  CloudDrizzle,
+} from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export const Icons = {
@@ -7,6 +16,9 @@ export const Icons = {
   CloudSnow,
   Sun,
   Search,
+  CloudFog,
+  CloudLightning,
+  CloudDrizzle,
 };
 
 export type Icon = LucideIcon;

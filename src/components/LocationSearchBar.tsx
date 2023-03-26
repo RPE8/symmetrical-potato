@@ -5,7 +5,8 @@ import * as Form from "@radix-ui/react-form";
 import { Icons } from "@/components/Icons";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import { WeatherContext } from "@/components/WeatherContext";
+import { WeatherContext } from "@/context/WeatherContext";
+import { setSearchLocation } from "@/context/weatherActions";
 import WeatherBlockContainer from "@/components/WeatherBlockContainer";
 
 interface LocationSearchProps extends HTMLAttributes<HTMLElement> {}
@@ -17,19 +18,16 @@ const LocationSearch: FC<LocationSearchProps> = () => {
       <Form.Root className="flex h-full">
         <Form.Field className="flex-grow" name="location">
           <Form.Label className="sr-only">Search location</Form.Label>
-          <div className="flex items-center justify-center w-full h-full p-1">
+          <div className="flex items-center justify-center w-full h-full">
             <Form.Control asChild>
               <Input
-                className="w-full h-full text-black"
+                fullWidth={true}
                 placeholder="Enter a location"
                 required
-                value={state.locationSearch ? state.locationSearch : ""}
+                value={state.searchLocation ?? ""}
                 onChange={(event) => {
                   event.preventDefault();
-                  dispatch({
-                    type: "SET_LOCATION",
-                    payload: event.target.value,
-                  });
+                  dispatch(setSearchLocation(event.target.value));
                 }}
               />
             </Form.Control>

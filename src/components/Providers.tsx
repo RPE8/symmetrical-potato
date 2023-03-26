@@ -1,11 +1,11 @@
 "use client";
 
-import type { FC, ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { WeatherProvider } from "@/components/WeatherContext";
+import { WeatherContextProvider } from "@/context/WeatherContext";
 
 const Providers = ({ children }: { children: ReactNode }) => {
-  return <WeatherProvider>{children}</WeatherProvider>;
+  return <WeatherContextProvider>{children}</WeatherContextProvider>;
 };
 
 export default Providers;
