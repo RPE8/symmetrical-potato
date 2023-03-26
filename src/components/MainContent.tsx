@@ -2,7 +2,7 @@
 
 import { HTMLAttributes, useContext, useEffect } from "react";
 
-import ky from "ky";
+import useSWR from "swr";
 
 import WeatherInfoMain from "@/components/WeatherMainInfoBlock";
 import WeatherInfoAdditional from "@/components/WeatherAdditionaInfoBlock";
@@ -11,24 +11,20 @@ import { WeatherContext } from "@/context/WeatherContext";
 
 interface MainProps extends HTMLAttributes<HTMLElement> {}
 
-const key = "e99cfc6ee3bdb8cc06ee485de8187f28";
+const key = process.env.NEXT_PUBLIC_API_KEY;
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Main = ({}: MainProps) => {
   const { state, dispatch } = useContext(WeatherContext);
-  useEffect(() => {
-    const fetchWeather = async () => {
-      //   const data = await ky
-      //     .get(
-      //       `https://api.openweathermap.org/data/2.5/weather?q=${state.searchLocation}&appid=${key}&units=metric`
-      //     )
-      //     .json();
-      //   console.log(data);
-    };
-    console.log(state.searchLocation);
-    if (state.searchLocation === "London" || state.searchLocation === "Minsk") {
-      fetchWeather();
-    }
-  }, [state.searchLocation]);
+  console.log(state.searchLocation);
+  const { data, error } = useSWR(
+    state.searchLocation === "London"
+      ? `https://api.openweathermap.org/data/2.5/weather?q=${state.searchLocation}&appid=${key}`
+      : null,
+    fetcher
+  );
+  if (error) return <div>failed to load</div>;
+  if (!data) return <div>loading...</div>;
   return (
     <main>
       <section>
