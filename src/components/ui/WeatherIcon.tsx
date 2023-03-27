@@ -1,42 +1,32 @@
-import { Icons } from "@/components/Icons";
+import Icon from "@/components/ui/Icon";
 import type { Weather } from "@/utils/constants";
 import { validWeatherValues } from "@/utils/constants";
 import { SVGAttributes } from "react";
-import { twMerge } from "tailwind-merge";
 
 interface IconProps extends SVGAttributes<SVGElement> {
   weather: Weather;
 }
 
-export default function WeatherIcon({
-  weather,
-  className,
-  ...props
-}: IconProps) {
+export default function WeatherIcon({ weather, ...props }: IconProps) {
   if (!validWeatherValues.includes(weather)) {
     throw new Error("Invalid weather value");
   }
 
   switch (weather) {
     case "Clear":
-      return (
-        <Icons.Sun
-          className={twMerge(className, "fill-orange-400")}
-          {...props}
-        />
-      );
+      return <Icon iconName="Sun" size="3xl" />;
     case "Clouds":
-      return <Icons.Cloudy />;
+      return <Icon iconName="Cloudy" size="3xl" />;
     case "Rain":
-      return <Icons.CloudRain />;
+      return <Icon iconName="CloudRain" size="3xl" />;
     case "Snow":
-      return <Icons.CloudSnow />;
+      return <Icon iconName="CloudSnow" size="3xl" />;
     case "Thunderstorm":
-      return <Icons.CloudLightning />;
+      return <Icon iconName="CloudLightning" size="3xl" />;
     case "Drizzle":
-      return <Icons.CloudDrizzle />;
+      return <Icon iconName="CloudDrizzle" size="3xl" />;
     case "Atmosphere":
-      return <Icons.CloudFog />;
+      return <Icon iconName="CloudFog" size="3xl" />;
     default:
       const exhaustiveCheck: never = weather;
       throw new Error(exhaustiveCheck);

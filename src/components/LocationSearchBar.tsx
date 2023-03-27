@@ -2,7 +2,7 @@
 
 import { FC, HTMLAttributes, useContext, useState } from "react";
 import * as Form from "@radix-ui/react-form";
-import { Icons } from "@/components/Icons";
+import Icon from "@/components/ui/Icon";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { WeatherContext } from "@/context/WeatherContext";
@@ -33,7 +33,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
             </Form.Control>
             <Form.Submit asChild>
               <Button size="sm">
-                <Icons.Search />
+                <Icon iconName="Search" />
               </Button>
             </Form.Submit>
           </div>
