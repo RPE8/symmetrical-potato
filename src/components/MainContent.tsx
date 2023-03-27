@@ -13,7 +13,7 @@ import { WeatherContext } from "@/context/WeatherContext";
 
 interface MainProps extends HTMLAttributes<HTMLElement> {}
 
-const key = process.env.NEXT_PUBLIC_API_KEY;
+const weatherApiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 
 const fetcher = (url: string) =>
   fetch(url).then(async (res) => {
@@ -41,7 +41,7 @@ const weatherSchema = z.object({
 
 const Main = ({}: MainProps) => {
   const { state, dispatch } = useContext(WeatherContext);
-  console.log(state.searchLocation);
+  //   console.log(state.searchLocation);
   const error = undefined;
   const data = weatherSchema.parse({
     coord: {
@@ -88,11 +88,17 @@ const Main = ({}: MainProps) => {
   });
   //   const { data, error } = useSWR(
   //     state.searchLocation === "London"
-  //       ? `https://api.openweathermap.org/data/2.5/weather?q=${state.searchLocation}&appid=${key}`
+  //       ? `https://api.openweathermap.org/data/2.5/weather?q=${state.searchLocation}&appid=${weatherApiKey}`
   //       : null,
-  //     fetcher
+  //     fetcher,
+  //   {
+  // 	revalidateOnFocus: false,
+  // 	revalidateOnReconnect: false,
+  // 	revalidateOnMount: false,
+  // 	refreshInterval: 10 * 60 * 1000
+  //   }
   //   );
-  console.log(data);
+  //   console.log(data);
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
   return (
