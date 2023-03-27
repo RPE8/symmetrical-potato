@@ -1,6 +1,13 @@
 "use client";
 
-import { FC, HTMLAttributes, useContext, useState, useCallback } from "react";
+import {
+  FC,
+  HTMLAttributes,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import * as Form from "@radix-ui/react-form";
 import z from "zod";
 
@@ -33,6 +40,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
   const [suggestions, setSuggestions] = useState<SuggestionLocations>([]);
   const [searchString, setSearchString] = useState<string>("");
   const { state, dispatch } = useContext(WeatherContext);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const fetcher = useCallback(
     (url: string) =>
@@ -99,19 +107,35 @@ const LocationSearch: FC<LocationSearchProps> = () => {
 
   return (
     <WeatherBlockContainer className="items-stretch w-full h-12">
-      <Form.Root className="flex h-full">
+      <Form.Root
+        className="flex h-full"
+        onSubmit={(event) => {
+          event.preventDefault();
+          // I don't know how to blur the input field here in another way because of Radix UI
+          //   As far as I understand, Radix UI asChild requires a ref to be passed to the child component
+          //   and that's why I can't use useImperativeHandle to get required methods from the child component
+          searchInputRef.current?.blur();
+          if (
+            suggestions.find((suggestion) => suggestion.name === searchString)
+          ) {
+            dispatch(setLocation(searchString));
+          }
+        }}
+      >
         <Form.Field className="flex-grow" name="location">
           <Form.Label className="sr-only">Search location</Form.Label>
           <div className="flex items-center justify-center w-full h-full">
             <Form.Control asChild>
               <Input
+                ref={searchInputRef}
                 fullWidth={true}
                 placeholder="Enter a location"
                 required
                 value={searchString ?? ""}
                 onChange={(event) => {
                   event.preventDefault();
-                  setSearchString(event.target.value);
+                  const { value } = event.target;
+                  setSearchString(value);
                 }}
                 suggestions={suggestions}
                 onSuggestionClick={(suggestion) => {
