@@ -33,7 +33,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
             </Form.Control>
             <Form.Submit asChild>
               <Button size="sm">
-                <Icon iconName="Search" />
+                <Icon iconName="Search" size="xsm" />
               </Button>
             </Form.Submit>
           </div>
