@@ -99,7 +99,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     suggestions = suggestions || [];
 
     const isDisplaySuggestions =
-      (isLoading && isFocused) || suggestions.length > 0;
+      (isLoading || suggestions.length > 0) && isFocused;
 
     const handleFocus = () => {
       setIsFocused(true);

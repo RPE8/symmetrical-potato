@@ -29,9 +29,7 @@ const LocationSearch = ({}: LocationSearchProps) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const loadLocationOrSkip =
-    debouncedSearchString.length > 2 &&
-    debouncedSearchString !== "" &&
-    debouncedSearchString !== state.location;
+    debouncedSearchString.length > 2 && debouncedSearchString !== "";
 
   const {
     data: suggestions = [],
