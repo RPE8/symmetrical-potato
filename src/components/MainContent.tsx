@@ -8,8 +8,9 @@ import z from "zod";
 import WeatherMainBlock from "@/components/WeatherMainBlock";
 import WeatherInfoAdditional from "@/components/WeatherAdditionaInfoBlock";
 import WeatherSunsetSunsriseBlock from "@/components/WeatherSunsetSunsriseBlock";
-import { Weather, validWeatherValues } from "@/utils/constants";
+import { validWeatherValues } from "@/utils/constants";
 import { WeatherContext } from "@/context/WeatherContext";
+import kelvinToCelsium from "@/utils/kelvinToCelsium";
 
 interface MainProps extends HTMLAttributes<HTMLElement> {}
 
@@ -61,7 +62,7 @@ const Main = ({}: MainProps) => {
         <WeatherMainBlock
           weather={data.weather[0].main}
           weatherDescription={data.weather[0].description}
-          temperature={data.main.temp}
+          temperature={kelvinToCelsium(data.main.temp)}
           temperatureUnit="C"
           location={state.location}
         />
