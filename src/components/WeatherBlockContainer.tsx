@@ -1,20 +1,38 @@
-import { FC } from "react";
+import { cva, VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
+
+const WeatherBlockContainerVariants = cva(
+  "flex flex-col bg-gray-c1 rounded-2xl px-5 my-3 ",
+  {
+    variants: {
+      loading: {
+        true: "animate-pulse bg-gray-c2 rounded-md h-32",
+      },
+    },
+    defaultVariants: {
+      loading: false,
+    },
+  }
+);
 
 interface WeatherInfoBlockContainerProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
-const WeatherInfoBlockContainer = ({
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof WeatherBlockContainerVariants> {}
+const WeatherBlockContainer = ({
   children,
+  loading,
   ...props
 }: WeatherInfoBlockContainerProps) => {
   const { className, ...rest } = props;
+  const classes = twMerge(
+    WeatherBlockContainerVariants({ loading }),
+    className
+  );
   return (
-    <div
-      className={`flex flex-col bg-gray-c1 rounded-2xl px-5 my-3 ${className}`}
-      {...rest}
-    >
-      {children}
+    <div className={classes} {...rest}>
+      {loading ? null : children}
     </div>
   );
 };
 
-export default WeatherInfoBlockContainer;
+export default WeatherBlockContainer;

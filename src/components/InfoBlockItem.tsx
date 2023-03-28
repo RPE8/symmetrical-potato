@@ -1,5 +1,3 @@
-import { FC } from "react";
-
 interface InfoBlockItemProps extends React.HTMLAttributes<HTMLDivElement> {
   valueName: string;
   value: string;

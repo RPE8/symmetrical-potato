@@ -1,20 +1,22 @@
 import { FC } from "react";
 import { format } from "date-fns";
 import SunsetSunriseChart from "@/components/SunsetSunriseChart";
-import WeatherInfoBlockContainer from "@/components/WeatherBlockContainer";
+import WeatherBlockContainer from "@/components/WeatherBlockContainer";
 import SunsetSunriseBlockItem from "@/components/SunsetSunriseBlockItem";
 
 interface WeatherSunsetSunsriseBlockProps {
   sunset: Date;
   sunrise: Date;
   currentTime: Date;
+  isLoading?: boolean;
 }
 
 const WeatherSunsetSunsriseBlock = ({
+  isLoading,
   ...props
 }: WeatherSunsetSunsriseBlockProps) => {
   return (
-    <WeatherInfoBlockContainer className="gap-y-1">
+    <WeatherBlockContainer loading={isLoading} className="gap-y-1">
       <h3 className="text-xs font-normal text-gray-c2 uppercase">
         {" "}
         Sunset & Sunrise{" "}
@@ -34,7 +36,7 @@ const WeatherSunsetSunsriseBlock = ({
           valueName="Remaining daylight"
         />
       </div>
-    </WeatherInfoBlockContainer>
+    </WeatherBlockContainer>
   );
 };
 

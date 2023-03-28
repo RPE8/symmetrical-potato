@@ -21,6 +21,10 @@ const Main = ({}: MainProps) => {
     return <div>Something went wrong</div>;
   }
 
+  if (!data && !isLoading) {
+    return null;
+  }
+
   return (
     <main>
       <section>
@@ -35,14 +39,16 @@ const Main = ({}: MainProps) => {
       </section>
       <section>
         <WeatherInfoAdditional
-          date={new Date()}
-          humidityPercent={5}
-          precipitationPercent={50}
-          windSpeed={10}
+          isLoading={isLoading}
+          date={data && data.date}
+          humidityPercent={data && data.main.humidity}
+          pressure={data && data.main.pressure}
+          windSpeed={data && data.wind.speed}
         />
       </section>
       <section>
         <WeatherSunsetSunsriseBlock
+          isLoading={isLoading}
           sunset={new Date()}
           sunrise={new Date()}
           currentTime={new Date()}
