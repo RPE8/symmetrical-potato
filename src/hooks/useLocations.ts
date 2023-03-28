@@ -34,12 +34,12 @@ const defaultFetcher: FetcherFn<SuggestionLocations> = (url: string) =>
   });
 
 export const useLocations = <T extends SuggestionLocations>(
-  location: string,
+  location: string | null,
   fetcher?: FetcherFn<T>
 ) => {
   const fetchOrSkip = Boolean(location && location.length > 2);
 
-  const LOCATION_API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=5&appid=${locationApiKey}`;
+  const LOCATION_API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=3&appid=${locationApiKey}`;
   const { data, error } = useSWR(
     fetchOrSkip ? LOCATION_API_URL : null,
     fetcher || defaultFetcher,

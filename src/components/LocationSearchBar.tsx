@@ -25,11 +25,15 @@ const LocationSearch: FC<LocationSearchProps> = () => {
   const [searchString, setSearchString] = useState<string>("");
   const { state, dispatch } = useContext(WeatherContext);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const loadLocationOrSkip =
+    searchString.length > 2 &&
+    searchString !== "" &&
+    searchString !== state.location;
   const {
     data: suggestions = [],
     isError,
     isLoading,
-  } = useLocations(searchString);
+  } = useLocations(loadLocationOrSkip ? searchString : null);
 
   //   const data = _.uniqBy(
   //     locationsSchema
@@ -85,6 +89,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
             <Form.Control asChild>
               <Input
                 ref={searchInputRef}
+                isLoading={isLoading && loadLocationOrSkip}
                 fullWidth={true}
                 placeholder="Enter a location"
                 required
@@ -96,6 +101,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
                 }}
                 suggestions={suggestions}
                 onSuggestionClick={(suggestion) => {
+                  searchInputRef.current?.blur();
                   dispatch(setLocation(suggestion.name));
                   setSearchString(suggestion.name);
                 }}

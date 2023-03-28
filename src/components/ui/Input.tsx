@@ -14,15 +14,19 @@ const suggestionListVariants = cva(
 );
 
 const suggestionItemVariants = cva(
-  "text-gray-c4 hover:bg-gray-c2 cursor-pointer",
+  "text-gray-c4 hover:bg-gray-c2 cursor-pointer my-2",
   {
     variants: {
       active: {
         true: "",
       },
+      loading: {
+        true: "animate-pulse bg-gray-c2 rounded-md",
+      },
     },
     defaultVariants: {
       active: true,
+      loading: false,
     },
   }
 );
@@ -63,6 +67,7 @@ interface InputProps
     VariantProps<typeof inputVariants> {
   suggestions?: Suggestion[];
   onSuggestionClick?: (suggestion: Suggestion) => void;
+  isLoading?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -73,6 +78,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       fullWidth = false,
       suggestions,
       onSuggestionClick,
+      isLoading = false,
       ...props
     },
     ref
@@ -89,6 +95,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         ref.current = node;
       }
     };
+
+    suggestions = suggestions || [];
+
+    const isDisplaySuggestions =
+      (isLoading && isFocused) || suggestions.length > 0;
 
     const handleFocus = () => {
       setIsFocused(true);
@@ -110,7 +121,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           onBlur={handleBlur}
           autoComplete="off"
         />
-        {suggestions && isFocused && (
+        {isDisplaySuggestions && (
           <ul
             className={twMerge(
               suggestionListVariants({
@@ -118,20 +129,49 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               })
             )}
           >
-            {suggestions.map((suggestion) => (
-              <li
-                key={suggestion.id}
-                className={twMerge(suggestionItemVariants({}))}
-                onMouseDown={() => {
-                  console.log("clikced");
-                  if (onSuggestionClick) {
-                    onSuggestionClick(suggestion);
-                  }
-                }}
-              >
-                {suggestion.name}
-              </li>
-            ))}
+            {suggestions.length > 0 ? (
+              suggestions.map((suggestion) => (
+                <li
+                  key={suggestion.id}
+                  className={twMerge(
+                    suggestionItemVariants({ loading: isLoading })
+                  )}
+                  onMouseDown={() => {
+                    if (onSuggestionClick) {
+                      onSuggestionClick(suggestion);
+                    } else {
+                      inputRef.current?.blur();
+                    }
+                  }}
+                >
+                  {suggestion.name}
+                </li>
+              ))
+            ) : (
+              <>
+                <li
+                  className={twMerge(
+                    suggestionItemVariants({ loading: isLoading })
+                  )}
+                >
+                  &nbsp;
+                </li>
+                <li
+                  className={twMerge(
+                    suggestionItemVariants({ loading: isLoading })
+                  )}
+                >
+                  &nbsp;
+                </li>
+                <li
+                  className={twMerge(
+                    suggestionItemVariants({ loading: isLoading })
+                  )}
+                >
+                  &nbsp;
+                </li>
+              </>
+            )}
           </ul>
         )}
       </div>
