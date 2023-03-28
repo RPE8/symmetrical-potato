@@ -1,6 +1,6 @@
 import WeatherIcon from "./ui/WeatherIcon";
 import type { Weather } from "@/utils/constants";
-import { cva, VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
 const weatherIconVariants = cva("", {
