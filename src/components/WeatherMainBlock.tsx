@@ -1,21 +1,7 @@
 import WeatherIcon from "./ui/WeatherIcon";
 import type { Weather } from "@/utils/constants";
-import { cva, VariantProps } from "class-variance-authority";
-import { twMerge } from "tailwind-merge";
 
-const WeatherMainBlockVariants = cva("", {
-  variants: {
-    loading: {
-      true: "animate-pulse bg-gray-c2 rounded-md",
-    },
-  },
-  defaultVariants: {
-    loading: false,
-  },
-});
-
-interface WeatherMainBlockProps
-  extends VariantProps<typeof WeatherMainBlockVariants> {
+interface WeatherMainBlockProps {
   weather: Weather | undefined;
   temperature: number | undefined;
   temperatureUnit: string | undefined;
