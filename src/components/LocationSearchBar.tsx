@@ -35,33 +35,6 @@ const LocationSearch: FC<LocationSearchProps> = () => {
     isLoading,
   } = useLocations(loadLocationOrSkip ? searchString : null);
 
-  //   const data = _.uniqBy(
-  //     locationsSchema
-  //       .parse([
-  //         {
-  //           name: "Lond",
-  //           lat: 25.584911,
-  //           lon: 76.6395092,
-  //           country: "IN",
-  //           state: "Madhya Pradesh",
-  //         },
-  //         {
-  //           name: "Fossvogur",
-  //           local_names: { is: "Fossvogur" },
-  //           lat: 64.1202709,
-  //           lon: -21.8722472,
-  //           country: "IS",
-  //         },
-  //         { name: "Lönd", lat: 64.1694796, lon: -21.6770985, country: "IS" },
-  //         { name: "Lönd", lat: 64.8292796, lon: -13.8293999, country: "IS" },
-  //       ])
-  //       .map((location) => ({
-  //         ...location,
-  //         id: `${location.name}-${location.country}`,
-  //       })),
-  //     "id"
-  //   );
-
   if (isError) {
     console.error(isError);
   }

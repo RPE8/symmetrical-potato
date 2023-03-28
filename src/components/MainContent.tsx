@@ -41,51 +41,7 @@ const weatherSchema = z.object({
 
 const Main = ({}: MainProps) => {
   const { state, dispatch } = useContext(WeatherContext);
-  //   console.log(state.searchLocation);
-  //   const error = undefined;
-  //   const data = weatherSchema.parse({
-  //     coord: {
-  //       lon: -0.1257,
-  //       lat: 51.5085,
-  //     },
-  //     weather: [
-  //       {
-  //         id: 804,
-  //         main: "Clouds",
-  //         description: "overcast clouds",
-  //         icon: "04d",
-  //       },
-  //     ],
-  //     base: "stations",
-  //     main: {
-  //       temp: 8.62,
-  //       feels_like: 6.8,
-  //       temp_min: 7.14,
-  //       temp_max: 9.88,
-  //       pressure: 1003,
-  //       humidity: 91,
-  //     },
-  //     visibility: 10000,
-  //     wind: {
-  //       speed: 3.09,
-  //       deg: 360,
-  //     },
-  //     clouds: {
-  //       all: 100,
-  //     },
-  //     dt: 1679829575,
-  //     sys: {
-  //       type: 2,
-  //       id: 2075535,
-  //       country: "GB",
-  //       sunrise: 1679809822,
-  //       sunset: 1679854923,
-  //     },
-  //     timezone: 3600,
-  //     id: 2643743,
-  //     name: "London",
-  //     cod: 200,
-  //   });
+
   const { data, error } = useSWR(
     state.location
       ? `https://api.openweathermap.org/data/2.5/weather?q=${state.location}&appid=${weatherApiKey}`
