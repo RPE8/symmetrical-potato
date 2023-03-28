@@ -5,7 +5,9 @@ import { validWeatherValues } from "@/utils/constants";
 
 const weatherApiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 
-type Weather = z.TypeOf<typeof weatherSchema>;
+type Weather = z.TypeOf<typeof weatherSchema> & {
+  date: Date;
+};
 
 type FetcherFn<T> = (url: string) => Promise<T>;
 
@@ -16,7 +18,9 @@ const defaultFetcher: FetcherFn<Weather> = (url: string) =>
       const error = new Error("An error occurred while fetching the data.");
       return Promise.reject(error);
     }
-    return weatherSchema.parse(data);
+    const parsedData = weatherSchema.parse(data) as Weather;
+    parsedData.date = new Date();
+    return parsedData;
   });
 
 const zodWeather = z.enum(validWeatherValues);
@@ -24,6 +28,7 @@ const weatherSchema = z.object({
   main: z.object({
     temp: z.number(),
     humidity: z.number(),
+    pressure: z.number(),
   }),
   weather: z.array(
     z.object({
@@ -31,6 +36,13 @@ const weatherSchema = z.object({
       description: z.string(),
     })
   ),
+  wind: z.object({
+    speed: z.number(),
+  }),
+  sys: z.object({
+    sunrise: z.number(),
+    sunset: z.number(),
+  }),
 });
 
 export const useWeather = <T extends Weather>(
