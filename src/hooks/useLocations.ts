@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWRImmutable from "swr";
 import z from "zod";
 import _ from "lodash";
 
@@ -40,7 +40,7 @@ export const useLocations = <T extends SuggestionLocations>(
   const fetchOrSkip = Boolean(location && location.length > 2);
 
   const LOCATION_API_URL = `https://api.openweathermap.org/geo/1.0/direct?q=${location}&limit=3&appid=${locationApiKey}`;
-  const { data, error } = useSWR(
+  const { data, error } = useSWRImmutable(
     fetchOrSkip ? LOCATION_API_URL : null,
     fetcher || defaultFetcher,
     {
@@ -48,6 +48,7 @@ export const useLocations = <T extends SuggestionLocations>(
       revalidateOnReconnect: false,
       revalidateOnMount: fetchOrSkip,
       revalidateIfStale: false,
+      shouldRetryOnError: false,
       refreshInterval: 0,
     }
   );
