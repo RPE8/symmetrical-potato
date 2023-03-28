@@ -1,15 +1,15 @@
 "use client";
 
 import {
-  FC,
   HTMLAttributes,
   useContext,
   useState,
-  useCallback,
   useRef,
+  useEffect,
+  useCallback,
+  ChangeEvent,
 } from "react";
 import * as Form from "@radix-ui/react-form";
-import z from "zod";
 
 import Icon from "@/components/ui/Icon";
 import Input from "@/components/ui/Input";
@@ -21,23 +21,53 @@ import useLocations from "@/hooks/useLocations";
 
 interface LocationSearchProps extends HTMLAttributes<HTMLElement> {}
 
-const LocationSearch: FC<LocationSearchProps> = () => {
+const LocationSearch = ({}: LocationSearchProps) => {
   const [searchString, setSearchString] = useState<string>("");
+  const [debouncedSearchString, setDebouncedSearchString] =
+    useState<string>("");
   const { state, dispatch } = useContext(WeatherContext);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
   const loadLocationOrSkip =
-    searchString.length > 2 &&
-    searchString !== "" &&
-    searchString !== state.location;
+    debouncedSearchString.length > 2 &&
+    debouncedSearchString !== "" &&
+    debouncedSearchString !== state.location;
+
   const {
     data: suggestions = [],
     isError,
     isLoading,
-  } = useLocations(loadLocationOrSkip ? searchString : null);
+  } = useLocations(loadLocationOrSkip ? debouncedSearchString : null);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearchString(searchString);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [searchString]);
 
   if (isError) {
     console.error(isError);
   }
+
+  const handleSearchStringChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setSearchString(event.target.value);
+    },
+    []
+  );
+
+  const handleSuggestionsClick = useCallback(
+    (suggestion: string) => {
+      searchInputRef.current?.blur();
+      dispatch(setLocation(suggestion));
+      setSearchString(suggestion);
+    },
+    [dispatch]
+  );
 
   return (
     <WeatherBlockContainer className="items-stretch w-full h-12">
@@ -49,11 +79,8 @@ const LocationSearch: FC<LocationSearchProps> = () => {
           //   As far as I understand, Radix UI asChild requires a ref to be passed to the child component
           //   and that's why I can't use useImperativeHandle to get required methods from the child component
           searchInputRef.current?.blur();
-          if (
-            suggestions.find((suggestion) => suggestion.name === searchString)
-          ) {
-            dispatch(setLocation(searchString));
-          }
+
+          dispatch(setLocation(searchString));
         }}
       >
         <Form.Field className="flex-grow" name="location">
@@ -67,11 +94,7 @@ const LocationSearch: FC<LocationSearchProps> = () => {
                 placeholder="Enter a location"
                 required
                 value={searchString ?? ""}
-                onChange={(event) => {
-                  event.preventDefault();
-                  const { value } = event.target;
-                  setSearchString(value);
-                }}
+                onChange={handleSearchStringChange}
                 suggestions={suggestions}
                 onSuggestionClick={(suggestion) => {
                   searchInputRef.current?.blur();
