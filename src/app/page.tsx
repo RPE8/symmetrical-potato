@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return (
-    <div className="container mx-auto py-11 px-6">
+    <div className="container mx-auto py-11 px-6 max-w-screen-md">
       <HeaderContent />
       <MainContent />
     </div>
