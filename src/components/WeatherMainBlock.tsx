@@ -3,6 +3,8 @@ import type { Weather } from "@/utils/constants";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
+const weatherMainBlock = cva("flex flex-col items-center my-10");
+
 const weatherIconVariants = cva("", {
   variants: {
     loading: {
@@ -37,11 +39,11 @@ const temperatureVariants = cva("text-5xl fond-semibold", {
 });
 
 interface WeatherMainBlockProps {
-  weather: Weather | undefined;
-  temperature: number | undefined;
-  temperatureUnit: string | undefined;
-  weatherDescription: string | undefined;
-  location: string | undefined;
+  weather?: Weather;
+  temperature?: number;
+  temperatureUnit?: string;
+  weatherDescription?: string;
+  location?: string;
   isLoading?: boolean;
 }
 
@@ -54,7 +56,7 @@ const WeatherMainBlock = ({
 }: WeatherMainBlockProps) => {
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center my-10">
+      <div className={weatherMainBlock()}>
         <div className={twMerge(weatherIconVariants({ loading: isLoading }))} />
         <div className={twMerge(locationVariants({ loading: isLoading }))}>
           &nbsp;
@@ -69,7 +71,7 @@ const WeatherMainBlock = ({
 
   return (
     <>
-      <div className="flex flex-col items-center my-10">
+      <div className={weatherMainBlock()}>
         {weather && (
           <WeatherIcon
             weather={weather}

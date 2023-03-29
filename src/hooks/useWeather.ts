@@ -51,13 +51,14 @@ export const useWeather = <T extends Weather>(
 ) => {
   const fetchOrSkip = Boolean(location && location.length > 0);
   const WEATHER_API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${weatherApiKey}`;
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     fetchOrSkip ? WEATHER_API_URL : null,
     fetcher || defaultFetcher,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      shouldRetryOnError: false,
+      revalidateOnMount: fetchOrSkip,
+      refreshInterval: 60000,
     }
   );
 
@@ -65,6 +66,7 @@ export const useWeather = <T extends Weather>(
     data,
     isLoading: fetchOrSkip && !error && !data,
     isError: error,
+    mutate,
   };
 };
 

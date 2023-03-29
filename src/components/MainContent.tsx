@@ -25,14 +25,16 @@ const Main = ({}: MainProps) => {
     return null;
   }
 
+  const { weather, main, wind, date } = data ?? {};
+
   return (
     <main>
       <section>
         <WeatherMainBlock
           isLoading={isLoading}
-          weather={data && data.weather[0].main}
-          weatherDescription={data && data.weather[0].description}
-          temperature={kelvinToCelsium(data && data.main.temp)}
+          weather={weather?.[0].main}
+          weatherDescription={weather?.[0].description}
+          temperature={kelvinToCelsium(main?.temp || 0)}
           temperatureUnit="C"
           location={state.location}
         />
@@ -40,10 +42,10 @@ const Main = ({}: MainProps) => {
       <section>
         <WeatherInfoAdditional
           isLoading={isLoading}
-          date={data && data.date}
-          humidityPercent={data && data.main.humidity}
-          pressure={data && data.main.pressure}
-          windSpeed={data && data.wind.speed}
+          date={date}
+          humidityPercent={main?.humidity}
+          pressure={main?.pressure}
+          windSpeed={wind?.speed}
         />
       </section>
       <section>
