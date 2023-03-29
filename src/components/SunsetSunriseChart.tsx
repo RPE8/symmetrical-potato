@@ -24,9 +24,9 @@ ChartJS.register(
 );
 
 interface SunsetSunriseChartProps {
-  sunset: Date;
-  sunrise: Date;
-  currentTime: Date;
+  sunset: number;
+  sunrise: number;
+  currentTime: number;
 }
 
 export const options = {

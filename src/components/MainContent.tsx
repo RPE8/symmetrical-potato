@@ -25,7 +25,8 @@ const Main = ({}: MainProps) => {
     return null;
   }
 
-  const { weather, main, wind, date } = data ?? {};
+  const currentDateMs = Date.now();
+  const { weather, main, wind, date, sys } = data ?? {};
 
   return (
     <main>
@@ -42,7 +43,7 @@ const Main = ({}: MainProps) => {
       <section>
         <WeatherInfoAdditional
           isLoading={isLoading}
-          date={date}
+          currentDateMs={currentDateMs}
           humidityPercent={main?.humidity}
           pressure={main?.pressure}
           windSpeed={wind?.speed}
@@ -51,9 +52,9 @@ const Main = ({}: MainProps) => {
       <section>
         <WeatherSunsetSunsriseBlock
           isLoading={isLoading}
-          sunset={new Date()}
-          sunrise={new Date()}
-          currentTime={new Date()}
+          sunsetMs={sys?.sunset}
+          sunriseMs={sys?.sunrise}
+          currentDateMs={currentDateMs}
         />
       </section>
     </main>
