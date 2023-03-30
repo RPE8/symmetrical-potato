@@ -23,5 +23,13 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        ".stroke-dash-line": {
+          "stroke-dasharray": "4",
+        },
+      });
+    },
+  ],
 };

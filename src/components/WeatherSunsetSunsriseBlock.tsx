@@ -24,7 +24,7 @@ const WeatherSunsetSunsriseBlock = ({
   //     return null;
   //   }
   return (
-    <WeatherBlockContainer loading={isLoading} className="gap-y-1">
+    <WeatherBlockContainer loading={isLoading} className="gap-y-6">
       <h3 className="text-xs font-normal text-gray-c2 uppercase">
         {" "}
         Sunset & Sunrise{" "}

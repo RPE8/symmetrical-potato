@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import * as d3 from "d3";
-import { startOfDay, endOfDay } from "date-fns";
+import { startOfDay, endOfDay, format } from "date-fns";
 import getMedianDate from "@/utils/medianDate";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 
@@ -50,30 +50,74 @@ const SunsetSunriseChart = ({
     const sunriseDate = new Date(sunrise);
     const sunsetDate = new Date(sunset);
 
-    const xDomain = [startDate, sunsetDate];
-    const yDomain = [-100, 100];
-    const data = [
+    const xDomain = [startDate, endDate];
+    const domainHighest = 100;
+    const domainLowest = -100;
+
+    const sunriseHighest = (domainHighest * 70) / 100;
+    const sunriseLowest = (domainLowest * 60) / 100;
+    const sunsetHighest = (domainHighest * 70) / 100;
+
+    const yDomain = [domainLowest, domainHighest];
+    const sunriseLineData = [
+      {
+        x: sunriseDate,
+        y: 0,
+      },
+      {
+        x: sunriseDate,
+        y: sunriseHighest,
+      },
+    ];
+    const sunsetLineData = [
+      {
+        x: sunsetDate,
+        y: 0,
+      },
+      {
+        x: sunsetDate,
+        y: sunsetHighest,
+      },
+    ];
+    const horizontalLineData = [
+      {
+        x: startDate,
+        y: 0,
+      },
+      {
+        x: endDate,
+        y: 0,
+      },
+    ];
+    const startToSunriseData = [
       {
         x: startDate,
         y: 0,
       },
       {
         x: getMedianDate(startDate, sunriseDate),
-        y: -100,
+        y: sunriseLowest,
       },
+      {
+        x: sunriseDate,
+        y: 0,
+      },
+    ];
+    const sunriseToSunsetData = [
       {
         x: sunriseDate,
         y: 0,
       },
       {
         x: getMedianDate(sunriseDate, sunsetDate),
-        y: 100,
+        y: sunriseHighest,
       },
       {
         x: sunsetDate,
         y: 0,
       },
     ];
+
     type Data = typeof data[number];
     const xGetter = (d: Data) => d.x;
     const yGetter = (d: Data) => d.y;
@@ -83,11 +127,39 @@ const SunsetSunriseChart = ({
 
     const area = d3
       .area()
+      .curve(d3.curveCatmullRom.alpha(0.5))
       .x((d) => xScale(xGetter(d)))
       .y0(yScale(0))
       .y1((d) => yScale(yGetter(d)));
 
-    svg.select("path").datum(data).attr("d", area);
+    const line = d3
+      .line()
+      .x((d) => xScale(xGetter(d)))
+
+      .y((d) => yScale(yGetter(d)));
+
+    svg.select("#startToSunrise").datum(startToSunriseData).attr("d", area);
+    svg.select("#sunriseToSunset").datum(sunriseToSunsetData).attr("d", area);
+
+    svg.select("#horizontalLine").datum(horizontalLineData).attr("d", line);
+
+    svg.select("#sunriseLine").datum(sunriseLineData).attr("d", line);
+
+    svg.select("#sunsetLine").datum(sunsetLineData).attr("d", line);
+
+    const sunriseText = svg.select("#sunrise");
+    const sunriseTextBounds = sunriseText.node().getBBox();
+
+    sunriseText
+      .attr("x", xScale(sunriseDate) - sunriseTextBounds.width / 2)
+      .attr("y", yScale(sunriseHighest));
+
+    const sunsetText = svg.select("#sunset");
+    const sunsetTextBounds = sunsetText.node().getBBox();
+
+    sunsetText
+      .attr("x", xScale(sunsetDate) - sunsetTextBounds.width / 2)
+      .attr("y", yScale(sunsetHighest));
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -99,9 +171,27 @@ const SunsetSunriseChart = ({
       ref={svgRef}
       width="100%"
       height="100%"
+      className="aspect-w-16 aspect-h-9"
       viewBox={[0, 0, size[0], size[1]]}
     >
-      <path></path>
+      <text id="sunriseTime">{format(currentTime, "hh:mm a")}</text>
+      <text id="sunrise">{format(currentTime, "hh:mm a")}</text>
+      <text id="sunrise">Sunrise</text>
+      <text id="sunset">Sunset</text>
+      <path id="startToSunrise" className="fill-blue-900"></path>
+      <path id="sunriseToSunset" className=" fill-blue-300"></path>
+      <path
+        id="horizontalLine"
+        className=" stroke-gray-c2 stroke-dash-line stroke-2"
+      ></path>
+      <path
+        id="sunriseLine"
+        className=" stroke-gray-c2 stroke-dash-line stroke-2"
+      ></path>
+      <path
+        id="sunsetLine"
+        className=" stroke-gray-c2 stroke-dash-line stroke-2"
+      ></path>
     </svg>
   );
 };
