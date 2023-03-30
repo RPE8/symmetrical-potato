@@ -22,7 +22,14 @@ const Main = ({}: MainProps) => {
   }
 
   if (!data && !isLoading) {
-    return null;
+    return (
+      <WeatherSunsetSunsriseBlock
+        isLoading={isLoading}
+        sunsetMs={0}
+        sunriseMs={0}
+        currentDateMs={0}
+      />
+    );
   }
 
   const currentDateMs = Date.now();

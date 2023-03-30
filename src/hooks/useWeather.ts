@@ -19,6 +19,9 @@ const defaultFetcher: FetcherFn<Weather> = (url: string) =>
       return Promise.reject(error);
     }
     const parsedData = weatherSchema.parse(data) as Weather;
+		// Convert the sunrise and sunset times from Unix time to milliseconds
+    parsedData.sys.sunrise = parsedData.sys.sunrise * 1000;
+    parsedData.sys.sunset = parsedData.sys.sunset * 1000;
     parsedData.date = new Date();
     return parsedData;
   });
