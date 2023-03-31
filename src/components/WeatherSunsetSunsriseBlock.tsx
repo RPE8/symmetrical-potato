@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import type { Weather } from "@/utils/constants";
 import SunsetSunriseChart from "@/components/SunsetSunriseChart";
 import WeatherBlockContainer from "@/components/WeatherBlockContainer";
 import SunsetSunriseBlockItem from "@/components/SunsetSunriseBlockItem";
@@ -6,12 +7,14 @@ import SunsetSunriseBlockItem from "@/components/SunsetSunriseBlockItem";
 interface WeatherSunsetSunsriseBlockProps {
   sunsetMs?: number;
   sunriseMs?: number;
+  weather: Weather;
   currentDateMs?: number;
   isLoading?: boolean;
 }
 
 const WeatherSunsetSunsriseBlock = ({
   isLoading,
+  weather,
   sunsetMs,
   sunriseMs,
   currentDateMs,
@@ -30,9 +33,10 @@ const WeatherSunsetSunsriseBlock = ({
         Sunset & Sunrise{" "}
       </h3>
       <SunsetSunriseChart
-        sunset={sunsetMs || 1680192073000}
-        sunrise={sunriseMs || 1680145609000}
-        currentTime={currentDateMs || 1680178266653}
+        weather={weather}
+        sunsetDateMs={sunsetMs || 1680192073000}
+        sunriseDateMs={sunriseMs || 1680145609000}
+        currentDateMs={currentDateMs || 1680178000000}
       />
       {/* <div>
         <SunsetSunriseBlockItem

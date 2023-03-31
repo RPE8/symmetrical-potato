@@ -1,24 +1,29 @@
 // @ts-nocheck
 
 import * as d3 from "d3";
+import type { Weather } from "@/utils/constants";
 import { startOfDay, endOfDay, format } from "date-fns";
 import getMedianDate from "@/utils/medianDate";
 import React, { useRef, useEffect, useState, useCallback } from "react";
+import WeatherIcon from "@/components/ui/WeatherIcon";
+import interpolateTimeToLinear from "@/utils/interpolateTimeToLinear";
 
 interface SunsetSunriseChartProps {
-  sunset: number;
-  sunrise: number;
-  currentTime: number;
+  sunsetDateMs: number;
+  sunriseDateMs: number;
+  currentDateMs: number;
+  weather: Weather;
 }
 
-const margin = { top: 40, right: 0, bottom: 0, left: 0 };
+const margin = { top: 40, right: 0, bottom: 40, left: 0 };
 const xType = d3.scaleTime;
 const yType = d3.scaleLinear;
 
 const SunsetSunriseChart = ({
-  sunset,
-  sunrise,
-  currentTime,
+  sunsetDateMs,
+  sunriseDateMs,
+  currentDateMs,
+  weather,
 }: SunsetSunriseChartProps) => {
   const [size, setSize] = useState([0, 0]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -73,20 +78,27 @@ const SunsetSunriseChart = ({
     const height = size[1];
 
     const xRange = [0, width];
-    const yRange = [height, margin.top];
+    const yRange = [height - margin.bottom, margin.top];
 
-    const startDate = startOfDay(currentTime);
-    const endDate = endOfDay(currentTime);
-    const sunriseDate = new Date(sunrise);
-    const sunsetDate = new Date(sunset);
+    const startDate = startOfDay(currentDateMs);
+    const endDate = endOfDay(currentDateMs);
+    const sunriseDate = new Date(sunriseDateMs);
+    const sunsetDate = new Date(sunsetDateMs);
+    // let currentDate = new Date(currentDateMs);
+    // currentDate = new Date(currentDate.setHours(0));
+    // currentDateMs = currentDate.getTime();
 
     const xDomain = [startDate, endDate];
     const domainHighest = 100;
     const domainLowest = -100;
 
-    const sunriseHighest = (domainHighest * 70) / 100;
-    const sunriseLowest = (domainLowest * 60) / 100;
-    const sunsetHighest = (domainHighest * 70) / 100;
+    const sunriseHighest = domainHighest;
+    const sunriseLowest = domainLowest;
+    const sunsetHighest = domainHighest;
+
+    const medianStartSunrise = getMedianDate(startDate, sunriseDate);
+    const medianSunriseSunset = getMedianDate(sunriseDate, sunsetDate);
+    const medianSunsetEnd = getMedianDate(sunsetDate, endDate);
 
     const yDomain = [domainLowest, domainHighest];
     const sunriseLineData = [
@@ -125,7 +137,7 @@ const SunsetSunriseChart = ({
         y: 0,
       },
       {
-        x: getMedianDate(startDate, sunriseDate),
+        x: medianStartSunrise,
         y: sunriseLowest,
       },
       {
@@ -139,7 +151,7 @@ const SunsetSunriseChart = ({
         y: 0,
       },
       {
-        x: getMedianDate(sunriseDate, sunsetDate),
+        x: medianSunriseSunset,
         y: sunriseHighest,
       },
       {
@@ -147,7 +159,20 @@ const SunsetSunriseChart = ({
         y: 0,
       },
     ];
-
+    const sunsetToEndData = [
+      {
+        x: sunsetDate,
+        y: 0,
+      },
+      {
+        x: medianSunsetEnd,
+        y: sunriseLowest,
+      },
+      {
+        x: endDate,
+        y: 0,
+      },
+    ];
     type Data = typeof data[number];
     const xGetter = (d: Data) => d.x;
     const yGetter = (d: Data) => d.y;
@@ -170,30 +195,31 @@ const SunsetSunriseChart = ({
 
     svg.select("#startToSunrise").datum(startToSunriseData).attr("d", area);
     svg.select("#sunriseToSunset").datum(sunriseToSunsetData).attr("d", area);
+    svg.select("#sunsetToEnd").datum(sunsetToEndData).attr("d", area);
     svg.select("#horizontalLine").datum(horizontalLineData).attr("d", line);
     svg.select("#sunriseLine").datum(sunriseLineData).attr("d", line);
     svg.select("#sunsetLine").datum(sunsetLineData).attr("d", line);
 
-    // Placenment of sunrise time and text
+    // Placenment of sunriseDateMs time and text
     placeSunsetSunrise({
       svg,
       xScale,
       yScale,
       timeSelector: "#sunriseTime",
-      textSelector: "#sunrise",
-      groupSelector: "#sunrise-g",
+      textSelector: "#sunriseDateMs",
+      groupSelector: "#sunriseDateMs-g",
       date: sunriseDate,
       highest: sunriseHighest,
     });
 
-    // Placenment of sunset time and text
+    // Placenment of sunsetDateMs time and text
     placeSunsetSunrise({
       svg,
       xScale,
       yScale,
       timeSelector: "#sunsetTime",
-      textSelector: "#sunset",
-      groupSelector: "#sunset-g",
+      textSelector: "#sunsetDateMs",
+      groupSelector: "#sunsetDateMs-g",
       date: sunsetDate,
       highest: sunsetHighest,
     });
@@ -205,10 +231,96 @@ const SunsetSunriseChart = ({
       `translate(${width - horizonBounds.width}, ${yScale(0) - 10})`
     );
 
+    // let interpolatedY = 0;
+    // let interpolateArguments = {
+    //   timeScale: xScale,
+    //   linearScale: yScale,
+    //   leftTimeValue: null,
+    //   rightTimeValue: null,
+    //   leftLinearValue: null,
+    //   rightLinearValue: null,
+    //   timeToBeInterpolated: null,
+    // };
+
+    // if (currentDate < sunriseDate) {
+    //   if (currentDate < medianStartSunrise) {
+    //     interpolateArguments = {
+    //       ...interpolateArguments,
+    //       leftTimeValue: startDate.getTime(),
+    //       rightTimeValue: medianStartSunrise.getTime(),
+    //       leftLinearValue: 0,
+    //       rightLinearValue: sunriseLowest,
+    //       timeToBeInterpolated: currentDateMs,
+    //       extra: 10,
+    //     };
+    //   } else {
+    //     interpolateArguments = {
+    //       ...interpolateArguments,
+    //       leftTimeValue: medianStartSunrise.getTime(),
+    //       rightTimeValue: sunriseDateMs,
+    //       leftLinearValue: sunriseLowest,
+    //       rightLinearValue: 0,
+    //       timeToBeInterpolated: currentDateMs,
+    //     };
+    //   }
+    // } else if (currentDate > sunsetDate) {
+    //   if (currentDate < medianSunsetEnd) {
+    //     interpolateArguments = {
+    //       ...interpolateArguments,
+    //       leftTimeValue: sunsetDateMs,
+    //       rightTimeValue: medianSunsetEnd.getTime(),
+    //       leftLinearValue: 0,
+    //       rightLinearValue: sunriseLowest,
+    //       timeToBeInterpolated: currentDateMs,
+    //     };
+    //   } else {
+    //     interpolateArguments = {
+    //       ...interpolateArguments,
+    //       leftTimeValue: medianSunsetEnd.getTime(),
+    //       rightTimeValue: endDate.getTime(),
+    //       leftLinearValue: sunriseLowest,
+    //       rightLinearValue: 0,
+    //       timeToBeInterpolated: currentDateMs,
+    //     };
+    //   }
+    // } else {
+    //   if (currentDate < medianSunriseSunset) {
+    //     interpolateArguments = {
+    //       ...interpolateArguments,
+    //       leftTimeValue: sunriseDateMs,
+    //       rightTimeValue: medianSunriseSunset.getTime(),
+    //       leftLinearValue: 0,
+    //       rightLinearValue: sunriseHighest,
+    //       timeToBeInterpolated: currentDateMs,
+    //     };
+    //   } else {
+    //     interpolateArguments = {
+    //       ...interpolateArguments,
+    //       leftTimeValue: medianSunriseSunset.getTime(),
+    //       rightTimeValue: sunsetDateMs,
+    //       leftLinearValue: sunriseHighest,
+    //       rightLinearValue: 0,
+    //       timeToBeInterpolated: currentDateMs,
+    //     };
+    //   }
+    // }
+
+    // interpolatedY = interpolateTimeToLinear(interpolateArguments);
+
+    // svg
+    //   .select("#currentIcon")
+    //   .attr("transform", `translate(${xScale(currentDate)}, ${interpolatedY})`);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [sunset, sunrise, currentTime, handleResize, size, placeSunsetSunrise]);
+  }, [
+    sunsetDateMs,
+    sunriseDateMs,
+    currentDateMs,
+    handleResize,
+    size,
+    placeSunsetSunrise,
+  ]);
 
   return (
     <svg
@@ -217,20 +329,20 @@ const SunsetSunriseChart = ({
       height="100%"
       viewBox={[0, 0, size[0], size[1]]}
     >
-      <g id="sunrise-g">
-        <text id="sunrise" className="text-sm fill-gray-c2">
-          Sunrise
+      <g id="sunriseDateMs-g">
+        <text id="sunriseDateMs" className="text-sm fill-gray-c2">
+          sunriseDateMs
         </text>
         <text id="sunriseTime" className="text-md fill-gray-c3">
-          {format(sunrise, "hh:mm a")}
+          {format(sunriseDateMs, "hh:mm a")}
         </text>
       </g>
-      <g id="sunset-g">
-        <text id="sunset" className="text-sm fill-gray-c2">
-          Sunset
+      <g id="sunsetDateMs-g">
+        <text id="sunsetDateMs" className="text-sm fill-gray-c2">
+          sunsetDateMs
         </text>
         <text id="sunsetTime" className="text-md fill-gray-c3">
-          {format(sunset, "hh:mm a")}
+          {format(sunsetDateMs, "hh:mm a")}
         </text>
       </g>
       <text id="horizon" className="text-sm fill-gray-c2">
@@ -238,6 +350,7 @@ const SunsetSunriseChart = ({
       </text>
       <path id="startToSunrise" className="fill-blue-900"></path>
       <path id="sunriseToSunset" className=" fill-blue-300"></path>
+      <path id="sunsetToEnd" className="fill-blue-900"></path>
       <path
         id="horizontalLine"
         className=" stroke-gray-c2 stroke-dash-line stroke-2"
@@ -250,6 +363,9 @@ const SunsetSunriseChart = ({
         id="sunsetLine"
         className=" stroke-gray-c2 stroke-dash-line stroke-2"
       ></path>
+      {/* <g id="currentIcon">
+        <WeatherIcon weather={weather} size="2xsm" className="fill-slate-100" />
+      </g> */}
     </svg>
   );
 };

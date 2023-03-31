@@ -18,6 +18,7 @@ const Main = ({}: MainProps) => {
   const { data, isError, isLoading } = useWeather(state.location);
 
   if (isError) {
+    console.log(isError);
     return <div>Something went wrong</div>;
   }
 
@@ -25,6 +26,7 @@ const Main = ({}: MainProps) => {
     return (
       <WeatherSunsetSunsriseBlock
         isLoading={isLoading}
+        weather={"Clouds"}
         sunsetMs={0}
         sunriseMs={0}
         currentDateMs={0}
@@ -59,6 +61,8 @@ const Main = ({}: MainProps) => {
       <section>
         <WeatherSunsetSunsriseBlock
           isLoading={isLoading}
+          //   weather={weather?.[0].main}
+          weather={"Clouds"}
           sunsetMs={sys?.sunset}
           sunriseMs={sys?.sunrise}
           currentDateMs={currentDateMs}

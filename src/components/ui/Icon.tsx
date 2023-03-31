@@ -28,6 +28,7 @@ export const Icons = {
 const iconVariants = cva("", {
   variants: {
     size: {
+      "2xsm": "w-4 h-4",
       xsm: "w-6 h-6",
       sm: "w-8 h-8",
       md: "w-12 h-12",
