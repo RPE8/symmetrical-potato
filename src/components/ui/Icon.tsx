@@ -25,18 +25,20 @@ export const Icons = {
   CloudDrizzle,
 };
 
+export const sizes = {
+  "2xsm": "w-4 h-4",
+  xsm: "w-6 h-6",
+  sm: "w-8 h-8",
+  md: "w-12 h-12",
+  lg: "w-16 h-16",
+  xl: "w-20 h-20",
+  "2xl": "w-24 h-24",
+  "3xl": "w-32 h-32",
+};
+
 const iconVariants = cva("", {
   variants: {
-    size: {
-      "2xsm": "w-4 h-4",
-      xsm: "w-6 h-6",
-      sm: "w-8 h-8",
-      md: "w-12 h-12",
-      lg: "w-16 h-16",
-      xl: "w-20 h-20",
-      "2xl": "w-24 h-24",
-      "3xl": "w-32 h-32",
-    },
+    size: sizes,
   },
   defaultVariants: {
     size: "md",
@@ -55,29 +57,25 @@ export default function Icon({
   iconName,
   ...props
 }: IconProps) {
-  const iconClass = twMerge(iconVariants({ size }));
+  const iconClass = twMerge(iconVariants({ size }), className);
 
   switch (iconName) {
     case "Sun":
-      return <Sun className={twMerge(iconClass, className)} {...props} />;
+      return <Sun className={iconClass} {...props} />;
     case "Cloudy":
-      return <Cloudy className={twMerge(iconClass, className)} {...props} />;
+      return <Cloudy className={iconClass} {...props} />;
     case "CloudRain":
-      return <CloudRain className={twMerge(iconClass, className)} {...props} />;
+      return <CloudRain className={iconClass} {...props} />;
     case "CloudSnow":
-      return <CloudSnow className={twMerge(iconClass, className)} {...props} />;
+      return <CloudSnow className={iconClass} {...props} />;
     case "CloudFog":
-      return <CloudFog className={twMerge(iconClass, className)} {...props} />;
+      return <CloudFog className={iconClass} {...props} />;
     case "CloudLightning":
-      return (
-        <CloudLightning className={twMerge(iconClass, className)} {...props} />
-      );
+      return <CloudLightning className={iconClass} {...props} />;
     case "CloudDrizzle":
-      return (
-        <CloudDrizzle className={twMerge(iconClass, className)} {...props} />
-      );
+      return <CloudDrizzle className={iconClass} {...props} />;
     case "Search":
-      return <Search className={twMerge(iconClass, className)} {...props} />;
+      return <Search className={iconClass} {...props} />;
     default: {
       const exhaustiveCheck: never = iconName;
       throw new Error(exhaustiveCheck);

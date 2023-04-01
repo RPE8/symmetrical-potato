@@ -87,7 +87,7 @@ const SunsetSunriseChart = ({
     const sunriseDate = new Date(sunriseDateMs);
     const sunsetDate = new Date(sunsetDateMs);
     let currentDate = new Date(currentDateMs);
-    currentDate = new Date(currentDate.setHours(23));
+    currentDate = new Date(currentDate.setHours(2));
     currentDateMs = currentDate.getTime();
 
     const xDomain = [startDate, endDate];
@@ -250,11 +250,6 @@ const SunsetSunriseChart = ({
       rightObject,
       xValue: currentDateMs,
     });
-    // const xValue = currentDateMs;
-    // const d0 = leftObject;
-    // const d1 = rightObject;
-    // const interpolatedY =
-    //   d0.y + ((d1.y - d0.y) * (xValue - d0.x)) / (d1.x - d0.x);
 
     let pathSelection = null;
     if (currentDateMs < sunriseDateMs) {
@@ -272,30 +267,6 @@ const SunsetSunriseChart = ({
       y: interpolatedY,
       x: currentDate,
     });
-    // const data = [leftObject, rightObject];
-
-    // const path = svg.select("#sunriseToSunset");
-    // const pathLength = path.node().getTotalLength();
-
-    // const coordinates = [];
-
-    // for (let i = 0; i <= pathLength; i += 10) {
-    //   const point = path.node().getPointAtLength(i);
-    //   coordinates.push([point.x, point.y]);
-    // }
-
-    // console.log(coordinates);
-    // const specificPoint = [xScale(currentDate), yScale(interpolatedY)];
-    // const closestPoint =
-    //   coordinates[
-    //     d3.scan(coordinates, function (d) {
-    //       const dx = d[0] - specificPoint[0],
-    //         dy = d[1] - specificPoint[1];
-    //       return Math.sqrt(dx * dx + dy * dy);
-    //     })
-    //   ];
-    // console.log(closestPoint);
-    // console.log(xScale(currentDate), yScale(interpolatedY));
 
     const currentIcon = svg.select("#currentIcon");
 
@@ -361,12 +332,8 @@ const SunsetSunriseChart = ({
         className=" stroke-gray-c2 stroke-dash-line stroke-2"
       ></path>
       <g id="currentIcon">
-        <WeatherIcon weather={weather} size="2xsm" className="fill-slate-100" />
+        <WeatherIcon weather={weather} variant="filled" />
       </g>
-      <path
-        id="lineG"
-        className="fill-none stroke-black stroke-dash-line stroke-2"
-      ></path>
     </svg>
   );
 };
