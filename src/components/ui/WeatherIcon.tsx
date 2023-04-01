@@ -50,11 +50,10 @@ export default function WeatherIcon({
   className,
   ...props
 }: IconProps) {
-  if (!(weather in validWeatherValues)) {
+  debugger;
+  if (!validWeatherValues.includes(weather)) {
     throw new Error(`Invalid weather value: ${weather}`);
   }
-
-  validWeatherValues;
 
   if (!(weather in weatherToIcon)) {
     throw new Error(`There is no Weather:Icon mapping for weather: ${weather}`);
