@@ -1,3 +1,4 @@
+// Weather thta we expect from openweather
 export const validWeatherValues = [
   "Thunderstorm",
   "Drizzle",

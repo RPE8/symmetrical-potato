@@ -71,7 +71,7 @@ export default function Icon({
   ...props
 }: IconProps) {
   if (!(iconName in Icons)) {
-    throw new Error("Invalid icon name");
+    throw new Error(`Invalid icon name: ${iconName}`);
   }
   const mergedClassName = twMerge(iconVariants({ size }), className);
 
