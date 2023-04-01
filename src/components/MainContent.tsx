@@ -3,7 +3,7 @@
 import { HTMLAttributes, useContext, useEffect } from "react";
 
 import WeatherMainBlock from "@/components/WeatherMainBlock";
-import WeatherInfoAdditional from "@/components/WeatherAdditionaInfoBlock";
+import WeatherAdditionalInfo from "@/components/WeatherAdditionaInfoBlock";
 import WeatherSunsetSunsriseBlock from "@/components/WeatherSunsetSunsriseBlock";
 
 import { WeatherContext } from "@/context/WeatherContext";
@@ -50,7 +50,7 @@ const Main = ({}: MainProps) => {
         />
       </section>
       <section>
-        <WeatherInfoAdditional
+        <WeatherAdditionalInfo
           isLoading={isLoading}
           currentDateMs={currentDateMs}
           humidityPercent={main?.humidity}

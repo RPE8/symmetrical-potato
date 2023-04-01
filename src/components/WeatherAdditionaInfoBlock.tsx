@@ -3,7 +3,7 @@ import WeatherBlockContainer from "@/components/WeatherBlockContainer";
 import InfoBlockItem from "./InfoBlockItem";
 import { format } from "date-fns";
 
-interface WeatherInfoAdditionalProps {
+interface WeatherAdditionalInfoProps {
   currentDateMs?: number;
   pressure?: number;
   humidityPercent?: number;
@@ -11,13 +11,13 @@ interface WeatherInfoAdditionalProps {
   isLoading?: boolean;
 }
 
-const WeatherInfoAdditional = ({
+const WeatherAdditionalInfo = ({
   currentDateMs,
   pressure,
   humidityPercent,
   windSpeed,
   isLoading,
-}: WeatherInfoAdditionalProps) => {
+}: WeatherAdditionalInfoProps) => {
   if (isLoading) {
     return <WeatherBlockContainer loading={isLoading} />;
   }
@@ -39,4 +39,4 @@ const WeatherInfoAdditional = ({
   );
 };
 
-export default WeatherInfoAdditional;
+export default WeatherAdditionalInfo;
