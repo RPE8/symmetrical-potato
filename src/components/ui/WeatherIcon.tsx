@@ -1,3 +1,4 @@
+import type { IconName } from "@/components/ui/Icon";
 import Icon, { sizes } from "@/components/ui/Icon";
 import type { Weather } from "@/utils/constants";
 import { validWeatherValues } from "@/utils/constants";
@@ -22,6 +23,20 @@ const weatherIconVariants = cva("", {
   },
 });
 
+type WeatherToIcon = {
+  [weather in Weather]: IconName;
+};
+
+// Map weather values from endpoint to icon names
+export const weatherToIcon: WeatherToIcon = {
+  Clear: "Sun",
+  Clouds: "Cloudy",
+  Rain: "CloudRain",
+  Snow: "CloudSnow",
+  Thunderstorm: "CloudLightning",
+  Drizzle: "CloudDrizzle",
+  Atmosphere: "CloudFog",
+};
 interface IconProps
   extends SVGAttributes<SVGElement>,
     VariantProps<typeof weatherIconVariants> {
@@ -35,62 +50,21 @@ export default function WeatherIcon({
   className,
   ...props
 }: IconProps) {
-  if (!validWeatherValues.includes(weather)) {
-    throw new Error("Invalid weather value");
+  if (!(weather in validWeatherValues)) {
+    throw new Error(`Invalid weather value: ${weather}`);
   }
 
-  switch (weather) {
-    case "Clear":
-      return (
-        <Icon
-          iconName="Sun"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    case "Clouds":
-      return (
-        <Icon
-          iconName="Cloudy"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    case "Rain":
-      return (
-        <Icon
-          iconName="CloudRain"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    case "Snow":
-      return (
-        <Icon
-          iconName="CloudSnow"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    case "Thunderstorm":
-      return (
-        <Icon
-          iconName="CloudLightning"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    case "Drizzle":
-      return (
-        <Icon
-          iconName="CloudDrizzle"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    case "Atmosphere":
-      return (
-        <Icon
-          iconName="CloudFog"
-          className={twMerge(weatherIconVariants({ variant, size }), className)}
-        />
-      );
-    default:
-      const exhaustiveCheck: never = weather;
-      throw new Error(exhaustiveCheck);
+  validWeatherValues;
+
+  if (!(weather in weatherToIcon)) {
+    throw new Error(`There is no Weather:Icon mapping for weather: ${weather}`);
   }
+
+  const iconName = weatherToIcon[weather];
+  return (
+    <Icon
+      iconName={iconName}
+      className={twMerge(weatherIconVariants({ variant, size }), className)}
+    />
+  );
 }
