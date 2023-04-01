@@ -1,6 +1,12 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
-import { InputHTMLAttributes, forwardRef, useState, useRef } from "react";
+import {
+  InputHTMLAttributes,
+  forwardRef,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 
 const suggestionListVariants = cva(
   "px-4 py-2 bg-gray-c1 absolute border border-c3 border-t-0",
@@ -86,6 +92,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const [isFocused, setIsFocused] = useState(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
+    // ref is for Radix UI
+    // inputRef for iternal use
     const setRefs = (node: HTMLInputElement) => {
       if (!node) return;
       inputRef.current = node;
@@ -96,7 +104,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
-    suggestions = suggestions || [];
+    suggestions ??= [];
 
     const isDisplaySuggestions =
       (isLoading || suggestions.length > 0) && isFocused;
@@ -109,17 +117,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       setIsFocused(false);
     };
 
-    const handleSuggestionClick = () => {};
+    useEffect(() => {
+      if (isFocused) {
+        inputRef.current?.focus();
+      } else {
+        inputRef.current?.blur();
+      }
+    }, [isFocused]);
 
     return (
       <div className={twMerge(divVariants({ fullWidth }))}>
         <input
           ref={setRefs}
           className={twMerge(className, inputVariants({ intent, fullWidth }))}
-          {...props}
           onFocus={handleFocus}
           onBlur={handleBlur}
           autoComplete="off"
+          {...props}
         />
         {isDisplaySuggestions && (
           <ul
@@ -139,8 +153,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                   onMouseDown={() => {
                     if (onSuggestionClick) {
                       onSuggestionClick(suggestion);
-                    } else {
-                      inputRef.current?.blur();
                     }
                   }}
                 >
