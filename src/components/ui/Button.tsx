@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, HTMLAttributes, forwardRef } from "react";
+import { ButtonHTMLAttributes, forwardRef } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 
 const buttonVariants = cva("", {
@@ -24,6 +24,7 @@ interface ButtonProps
     VariantProps<typeof buttonVariants> {}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  // spread props for Radix UI
   ({ variant, size, children, ...props }, ref) => {
     return (
       <button
@@ -38,4 +39,5 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = "Button";
+
 export default Button;
