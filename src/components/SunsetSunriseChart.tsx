@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import * as d3 from "d3";
 import _ from "lodash";
 import type { Weather } from "@/utils/constants";
@@ -18,8 +16,6 @@ interface SunsetSunriseChartProps {
 }
 
 const margin = { top: 40, right: 0, bottom: 40, left: 0 };
-const xType = d3.scaleTime;
-const yType = d3.scaleLinear;
 
 const SunsetSunriseChart = ({
   sunsetDateMs,
@@ -40,18 +36,36 @@ const SunsetSunriseChart = ({
       groupSelector,
       date,
       highest,
+    }: {
+      svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+      xScale: d3.ScaleTime<number, number, never>;
+      yScale: d3.ScaleLinear<number, number, never>;
+      timeSelector: string;
+      textSelector: string;
+      groupSelector: string;
+      date: Date;
+      highest: number;
     }) => {
-      const sunriseTime = svg.select(timeSelector);
-      const sunriseTimeBounds = sunriseTime.node().getBBox();
+      const time = svg.select<SVGTextElement>(timeSelector);
+      if (!time) return;
+      const timeNode = time.node();
+      if (!timeNode) return;
+      const timeBounds = timeNode.getBBox();
 
-      sunriseTime
-        .attr("x", xScale(date) - sunriseTimeBounds.width / 2)
+      time
+        .attr("x", xScale(date) - timeBounds.width / 2)
         .attr("y", yScale(highest));
-      const sunriseText = svg.select(textSelector);
-      const sunriseTextBounds = sunriseText.node().getBBox();
-      sunriseText
-        .attr("x", xScale(date) - sunriseTextBounds.width / 2)
-        .attr("y", yScale(highest) - sunriseTextBounds.height);
+
+      const text = svg.select<SVGTextElement>(textSelector);
+      if (!text) return;
+      const textNode = text.node();
+      if (!textNode) return;
+      const textBounds = textNode.getBBox();
+
+      text
+        .attr("x", xScale(date) - textBounds.width / 2)
+        .attr("y", yScale(highest) - textBounds.height);
+
       svg.select(groupSelector).attr("transform", "translate(0, -10)");
     },
     []
@@ -66,9 +80,13 @@ const SunsetSunriseChart = ({
   }, []);
 
   useEffect(() => {
+    if (!svgRef.current) {
+      return;
+    }
     const svg = d3.select(svgRef.current);
     if (!svg) return;
-    const svgBoundings = svgRef.current.getBoundingClientRect();
+    const svgNode = svg.node() as SVGSVGElement;
+    const svgBoundings = svgNode.getBBox();
     if (svgBoundings.width !== size[0] || svgBoundings.height !== size[1]) {
       handleResize();
       return;
@@ -79,18 +97,16 @@ const SunsetSunriseChart = ({
     const width = size[0];
     const height = size[1];
 
-    const xRange = [0, width];
-    const yRange = [height - margin.bottom, margin.top];
+    const xRange: [number, number] = [0, width];
+    const yRange: [number, number] = [height - margin.bottom, margin.top];
 
     const startDate = startOfDay(currentDateMs);
     const endDate = endOfDay(currentDateMs);
     const sunriseDate = new Date(sunriseDateMs);
     const sunsetDate = new Date(sunsetDateMs);
-    let currentDate = new Date(currentDateMs);
-    currentDate = new Date(currentDate.setHours(2));
-    currentDateMs = currentDate.getTime();
+    const currentDate = new Date(currentDateMs);
 
-    const xDomain = [startDate, endDate];
+    const xDomain: [Date, Date] = [startDate, endDate];
     const domainHighest = 100;
     const domainLowest = -100;
 
@@ -102,8 +118,14 @@ const SunsetSunriseChart = ({
     const medianSunriseSunset = getMedianDate(sunriseDate, sunsetDate);
     const medianSunsetEnd = getMedianDate(sunsetDate, endDate);
 
-    const yDomain = [domainLowest, domainHighest];
-    const sunriseLineData = [
+    const yDomain: [number, number] = [domainLowest, domainHighest];
+
+    type DataPoint = {
+      x: Date;
+      y: number;
+    };
+
+    const sunriseLineData: DataPoint[] = [
       {
         x: sunriseDate,
         y: 0,
@@ -113,7 +135,7 @@ const SunsetSunriseChart = ({
         y: sunriseHighest,
       },
     ];
-    const sunsetLineData = [
+    const sunsetLineData: DataPoint[] = [
       {
         x: sunsetDate,
         y: 0,
@@ -123,7 +145,7 @@ const SunsetSunriseChart = ({
         y: sunsetHighest,
       },
     ];
-    const horizontalLineData = [
+    const horizontalLineData: DataPoint[] = [
       {
         x: startDate,
         y: 0,
@@ -133,7 +155,7 @@ const SunsetSunriseChart = ({
         y: 0,
       },
     ];
-    const startToSunriseData = [
+    const startToSunriseData: DataPoint[] = [
       {
         x: startDate,
         y: 0,
@@ -147,7 +169,7 @@ const SunsetSunriseChart = ({
         y: 0,
       },
     ];
-    const sunriseToSunsetData = [
+    const sunriseToSunsetData: DataPoint[] = [
       {
         x: sunriseDate,
         y: 0,
@@ -161,7 +183,7 @@ const SunsetSunriseChart = ({
         y: 0,
       },
     ];
-    const sunsetToEndData = [
+    const sunsetToEndData: DataPoint[] = [
       {
         x: sunsetDate,
         y: 0,
@@ -180,29 +202,27 @@ const SunsetSunriseChart = ({
       [...startToSunriseData, ...sunriseToSunsetData, ...sunsetToEndData],
       (d) => d.x.getTime()
     );
-    console.log(allData);
-    const bisectDate = d3.bisector((d) => d.x).left;
+
+    const bisectDate = d3.bisector<DataPoint, Date>((d) => d.x).left;
     const leftIndex = bisectDate(allData, currentDate);
     const leftObject = allData[leftIndex - 1];
     const rightObject = allData[leftIndex];
-    console.log(leftObject);
-    console.log(rightObject);
-    type Data = typeof data[number];
-    const xGetter = (d: Data) => d.x;
-    const yGetter = (d: Data) => d.y;
 
-    const xScale = xType(xDomain, xRange);
-    const yScale = yType(yDomain, yRange);
+    const xGetter = (d: DataPoint) => d.x;
+    const yGetter = (d: DataPoint) => d.y;
+
+    const xScale = d3.scaleTime().domain(xDomain).range(xRange);
+    const yScale = d3.scaleLinear().domain(yDomain).range(yRange);
 
     const area = d3
-      .area()
+      .area<DataPoint>()
       .curve(d3.curveCatmullRom.alpha(0.5))
       .x((d) => xScale(xGetter(d)))
       .y0(yScale(0))
       .y1((d) => yScale(yGetter(d)));
 
     const line = d3
-      .line()
+      .line<DataPoint>()
       .x((d) => xScale(xGetter(d)))
 
       .y((d) => yScale(yGetter(d)));
@@ -238,12 +258,17 @@ const SunsetSunriseChart = ({
       highest: sunsetHighest,
     });
 
-    const horizon = svg.select("#horizon");
-    const horizonBounds = horizon.node().getBBox();
-    horizon.attr(
-      "transform",
-      `translate(${width - horizonBounds.width}, ${yScale(0) - 10})`
-    );
+    const horizon = svg.select<SVGTextElement>("#horizon");
+    if (horizon) {
+      const horizonNode = horizon.node();
+      if (horizonNode) {
+        const horizonBounds = horizonNode.getBBox();
+        horizon.attr(
+          "transform",
+          `translate(${width - horizonBounds.width}, ${yScale(0) - 10})`
+        );
+      }
+    }
 
     const interpolatedY = interpolateY({
       leftObject,
@@ -251,7 +276,12 @@ const SunsetSunriseChart = ({
       xValue: currentDateMs,
     });
 
-    let pathSelection = null;
+    let pathSelection: d3.Selection<
+      SVGSVGElement,
+      unknown,
+      null,
+      undefined
+    > | null = null;
     if (currentDateMs < sunriseDateMs) {
       pathSelection = svg.select("#startToSunrise");
     } else if (currentDateMs < sunsetDateMs) {
@@ -260,24 +290,34 @@ const SunsetSunriseChart = ({
       pathSelection = svg.select("#sunsetToEnd");
     }
 
-    const curvedCoordinates = defaultToCurveCoordinates({
-      pathSelection: pathSelection,
-      xScale,
-      yScale,
-      y: interpolatedY,
-      x: currentDate,
-    });
+    if (pathSelection) {
+      const curvedCoordinates = defaultToCurveCoordinates({
+        pathSelection: pathSelection,
+        xScale,
+        yScale,
+        y: interpolatedY,
+        x: currentDate,
+      });
 
-    const currentIcon = svg.select("#currentIcon");
+      if (!curvedCoordinates) return;
 
-    const currentIconBounds = currentIcon.node().getBBox();
+      const currentIconSelection = svg.select<SVGGElement>("#currentIcon");
 
-    currentIcon.attr(
-      "transform",
-      `translate(${curvedCoordinates[0] - currentIconBounds.width / 2}, ${
-        curvedCoordinates[1] - currentIconBounds.height / 2
-      })`
-    );
+      if (!currentIconSelection) return;
+
+      const currentIcon = currentIconSelection.node();
+      if (!currentIcon) return;
+
+      const currentIconBounds = currentIcon.getBBox();
+
+      currentIconSelection.attr(
+        "transform",
+        `translate(${curvedCoordinates[0] - currentIconBounds.width / 2}, ${
+          curvedCoordinates[1] - currentIconBounds.height / 2
+        })`
+      );
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -295,7 +335,7 @@ const SunsetSunriseChart = ({
       ref={svgRef}
       width="100%"
       height="100%"
-      viewBox={[0, 0, size[0], size[1]]}
+      viewBox={`[0, 0, ${size[0]}, ${size[1]}]`}
     >
       <g id="sunriseDateMs-g">
         <text id="sunriseDateMs" className="text-sm fill-gray-c2">

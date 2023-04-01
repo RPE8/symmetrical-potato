@@ -7,7 +7,7 @@ const defaultToCurveCoordinates = ({
   y,
   x,
 }: {
-  pathSelection: d3.Selection<SVGSVGElement | null, unknown, null, undefined>;
+  pathSelection: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   xScale: d3.ScaleTime<number, number>;
   yScale: d3.ScaleLinear<number, number>;
   y: number;
@@ -25,17 +25,18 @@ const defaultToCurveCoordinates = ({
 
   const pathLength = node.getTotalLength();
 
-  const coordinates = [];
+  const coordinates: [number, number][] = [];
   for (let i = 0; i <= pathLength; i += 10) {
     const point = node.getPointAtLength(i);
     coordinates.push([point.x, point.y]);
   }
 
-  const specificPoint = [xScale(x), yScale(y)];
+  const specificPoint: [number, number] = [xScale(x), yScale(y)];
   const closestPoint =
     coordinates[
       // @ts-ignore
-      d3.scan(coordinates, function (d) {
+      // It throws unknown for me error: Property 'scan' does not exist on type 'typeof import("...")'
+      d3.scan(coordinates, function (d: [number, number]) {
         const dx = d[0] - specificPoint[0],
           dy = d[1] - specificPoint[1];
         return Math.sqrt(dx * dx + dy * dy);
