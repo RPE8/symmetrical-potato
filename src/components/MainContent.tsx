@@ -61,8 +61,7 @@ const Main = ({}: MainProps) => {
       <section>
         <WeatherSunsetSunsriseBlock
           isLoading={isLoading}
-          //   weather={weather?.[0].main}
-          weather={"Clouds"}
+          weather={weather?.[0].main}
           sunsetMs={sys?.sunset}
           sunriseMs={sys?.sunrise}
           currentDateMs={currentDateMs}

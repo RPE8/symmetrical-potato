@@ -7,7 +7,7 @@ import SunsetSunriseBlockItem from "@/components/SunsetSunriseBlockItem";
 interface WeatherSunsetSunsriseBlockProps {
   sunsetMs?: number;
   sunriseMs?: number;
-  weather: Weather;
+  weather?: Weather;
   currentDateMs?: number;
   isLoading?: boolean;
 }
@@ -23,7 +23,7 @@ const WeatherSunsetSunsriseBlock = ({
     return <WeatherBlockContainer loading={isLoading} />;
   }
 
-  if (!sunsetMs || !sunriseMs || !currentDateMs) {
+  if (!sunsetMs || !sunriseMs || !currentDateMs || !weather) {
     return null;
   }
   return (
