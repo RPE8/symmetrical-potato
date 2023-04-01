@@ -13,7 +13,20 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
+// Make sure all Icons are imported from lucide-react
+// and that they are added to the Icons object
 export type Icon = LucideIcon;
+export type IconName =
+  | "Cloudy"
+  | "Search"
+  | "Sun"
+  | "CloudRain"
+  | "CloudSnow"
+  | "CloudFog"
+  | "CloudLightning"
+  | "CloudDrizzle";
+export type Icons = Record<IconName, Icon>;
+
 export const Icons = {
   Cloudy,
   CloudRain,
@@ -57,28 +70,11 @@ export default function Icon({
   iconName,
   ...props
 }: IconProps) {
-  const iconClass = twMerge(iconVariants({ size }), className);
-
-  switch (iconName) {
-    case "Sun":
-      return <Sun className={iconClass} {...props} />;
-    case "Cloudy":
-      return <Cloudy className={iconClass} {...props} />;
-    case "CloudRain":
-      return <CloudRain className={iconClass} {...props} />;
-    case "CloudSnow":
-      return <CloudSnow className={iconClass} {...props} />;
-    case "CloudFog":
-      return <CloudFog className={iconClass} {...props} />;
-    case "CloudLightning":
-      return <CloudLightning className={iconClass} {...props} />;
-    case "CloudDrizzle":
-      return <CloudDrizzle className={iconClass} {...props} />;
-    case "Search":
-      return <Search className={iconClass} {...props} />;
-    default: {
-      const exhaustiveCheck: never = iconName;
-      throw new Error(exhaustiveCheck);
-    }
+  if (!(iconName in Icons)) {
+    throw new Error("Invalid icon name");
   }
+  const mergedClassName = twMerge(iconVariants({ size }), className);
+
+  const Icon = Icons[iconName];
+  return <Icon className={mergedClassName} {...props} />;
 }
