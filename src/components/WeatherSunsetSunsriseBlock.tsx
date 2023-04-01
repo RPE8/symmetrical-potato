@@ -32,12 +32,14 @@ const WeatherSunsetSunsriseBlock = ({
         {" "}
         Sunset & Sunrise{" "}
       </h3>
-      <SunsetSunriseChart
-        weather={weather}
-        sunsetDateMs={sunsetMs || 1680192073000}
-        sunriseDateMs={sunriseMs || 1680145609000}
-        currentDateMs={currentDateMs || 1680178000000}
-      />
+      <div className="aspect-video max-h-64">
+        <SunsetSunriseChart
+          weather={weather}
+          sunsetDateMs={sunsetMs || 1680192073000}
+          sunriseDateMs={sunriseMs || 1680145609000}
+          currentDateMs={currentDateMs || 1680178000000}
+        />
+      </div>
       {/* <div>
         <SunsetSunriseBlockItem
           value={`${format(sunsetMs, "h")}H ${format(sunsetMs, "m")}M`}
