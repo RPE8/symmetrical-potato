@@ -19,13 +19,13 @@ const WeatherSunsetSunsriseBlock = ({
   sunriseMs,
   currentDateMs,
 }: WeatherSunsetSunsriseBlockProps) => {
-  //   if (isLoading) {
-  //     return <WeatherBlockContainer loading={isLoading} />;
-  //   }
+  if (isLoading) {
+    return <WeatherBlockContainer loading={isLoading} />;
+  }
 
-  //   if (!sunsetMs || !sunriseMs || !currentDateMs) {
-  //     return null;
-  //   }
+  if (!sunsetMs || !sunriseMs || !currentDateMs) {
+    return null;
+  }
   return (
     <WeatherBlockContainer loading={isLoading} className="gap-y-6">
       <h3 className="text-xs font-normal text-gray-c2 uppercase">
@@ -35,9 +35,9 @@ const WeatherSunsetSunsriseBlock = ({
       <div className="aspect-video max-h-64">
         <SunsetSunriseChart
           weather={weather}
-          sunsetDateMs={sunsetMs || 1680192073000}
-          sunriseDateMs={sunriseMs || 1680145609000}
-          currentDateMs={currentDateMs || 1680178000000}
+          sunsetDateMs={sunsetMs}
+          sunriseDateMs={sunriseMs}
+          currentDateMs={currentDateMs}
         />
       </div>
       {/* <div>

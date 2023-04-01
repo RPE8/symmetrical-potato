@@ -83,11 +83,10 @@ const SunsetSunriseChart = ({
     if (!svgRef.current) {
       return;
     }
+    const svgBounds = svgRef.current.getBoundingClientRect();
     const svg = d3.select(svgRef.current);
     if (!svg) return;
-    const svgNode = svg.node() as SVGSVGElement;
-    const svgBoundings = svgNode.getBBox();
-    if (svgBoundings.width !== size[0] || svgBoundings.height !== size[1]) {
+    if (svgBounds.width !== size[0] || svgBounds.height !== size[1]) {
       handleResize();
       return;
     }
@@ -335,7 +334,7 @@ const SunsetSunriseChart = ({
       ref={svgRef}
       width="100%"
       height="100%"
-      viewBox={`[0, 0, ${size[0]}, ${size[1]}]`}
+      viewBox={`0 0 ${size[0]} ${size[1]}`}
     >
       <g id="sunriseDateMs-g">
         <text id="sunriseDateMs" className="text-sm fill-gray-c2">
