@@ -1,12 +1,14 @@
 // @ts-nocheck
 
 import * as d3 from "d3";
+import _ from "lodash";
 import type { Weather } from "@/utils/constants";
 import { startOfDay, endOfDay, format } from "date-fns";
 import getMedianDate from "@/utils/medianDate";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import WeatherIcon from "@/components/ui/WeatherIcon";
-import interpolateTimeToLinear from "@/utils/interpolateTimeToLinear";
+import interpolateY from "@/utils/interpolateTimeToLinear";
+import defaultToCurveCoordinates from "@/utils/defaultToCurveCoordinates";
 
 interface SunsetSunriseChartProps {
   sunsetDateMs: number;
@@ -84,9 +86,9 @@ const SunsetSunriseChart = ({
     const endDate = endOfDay(currentDateMs);
     const sunriseDate = new Date(sunriseDateMs);
     const sunsetDate = new Date(sunsetDateMs);
-    // let currentDate = new Date(currentDateMs);
-    // currentDate = new Date(currentDate.setHours(0));
-    // currentDateMs = currentDate.getTime();
+    let currentDate = new Date(currentDateMs);
+    currentDate = new Date(currentDate.setHours(23));
+    currentDateMs = currentDate.getTime();
 
     const xDomain = [startDate, endDate];
     const domainHighest = 100;
@@ -173,6 +175,18 @@ const SunsetSunriseChart = ({
         y: 0,
       },
     ];
+
+    const allData = _.uniqBy(
+      [...startToSunriseData, ...sunriseToSunsetData, ...sunsetToEndData],
+      (d) => d.x.getTime()
+    );
+    console.log(allData);
+    const bisectDate = d3.bisector((d) => d.x).left;
+    const leftIndex = bisectDate(allData, currentDate);
+    const leftObject = allData[leftIndex - 1];
+    const rightObject = allData[leftIndex];
+    console.log(leftObject);
+    console.log(rightObject);
     type Data = typeof data[number];
     const xGetter = (d: Data) => d.x;
     const yGetter = (d: Data) => d.y;
@@ -231,85 +245,68 @@ const SunsetSunriseChart = ({
       `translate(${width - horizonBounds.width}, ${yScale(0) - 10})`
     );
 
-    // let interpolatedY = 0;
-    // let interpolateArguments = {
-    //   timeScale: xScale,
-    //   linearScale: yScale,
-    //   leftTimeValue: null,
-    //   rightTimeValue: null,
-    //   leftLinearValue: null,
-    //   rightLinearValue: null,
-    //   timeToBeInterpolated: null,
-    // };
+    const interpolatedY = interpolateY({
+      leftObject,
+      rightObject,
+      xValue: currentDateMs,
+    });
+    // const xValue = currentDateMs;
+    // const d0 = leftObject;
+    // const d1 = rightObject;
+    // const interpolatedY =
+    //   d0.y + ((d1.y - d0.y) * (xValue - d0.x)) / (d1.x - d0.x);
 
-    // if (currentDate < sunriseDate) {
-    //   if (currentDate < medianStartSunrise) {
-    //     interpolateArguments = {
-    //       ...interpolateArguments,
-    //       leftTimeValue: startDate.getTime(),
-    //       rightTimeValue: medianStartSunrise.getTime(),
-    //       leftLinearValue: 0,
-    //       rightLinearValue: sunriseLowest,
-    //       timeToBeInterpolated: currentDateMs,
-    //       extra: 10,
-    //     };
-    //   } else {
-    //     interpolateArguments = {
-    //       ...interpolateArguments,
-    //       leftTimeValue: medianStartSunrise.getTime(),
-    //       rightTimeValue: sunriseDateMs,
-    //       leftLinearValue: sunriseLowest,
-    //       rightLinearValue: 0,
-    //       timeToBeInterpolated: currentDateMs,
-    //     };
-    //   }
-    // } else if (currentDate > sunsetDate) {
-    //   if (currentDate < medianSunsetEnd) {
-    //     interpolateArguments = {
-    //       ...interpolateArguments,
-    //       leftTimeValue: sunsetDateMs,
-    //       rightTimeValue: medianSunsetEnd.getTime(),
-    //       leftLinearValue: 0,
-    //       rightLinearValue: sunriseLowest,
-    //       timeToBeInterpolated: currentDateMs,
-    //     };
-    //   } else {
-    //     interpolateArguments = {
-    //       ...interpolateArguments,
-    //       leftTimeValue: medianSunsetEnd.getTime(),
-    //       rightTimeValue: endDate.getTime(),
-    //       leftLinearValue: sunriseLowest,
-    //       rightLinearValue: 0,
-    //       timeToBeInterpolated: currentDateMs,
-    //     };
-    //   }
-    // } else {
-    //   if (currentDate < medianSunriseSunset) {
-    //     interpolateArguments = {
-    //       ...interpolateArguments,
-    //       leftTimeValue: sunriseDateMs,
-    //       rightTimeValue: medianSunriseSunset.getTime(),
-    //       leftLinearValue: 0,
-    //       rightLinearValue: sunriseHighest,
-    //       timeToBeInterpolated: currentDateMs,
-    //     };
-    //   } else {
-    //     interpolateArguments = {
-    //       ...interpolateArguments,
-    //       leftTimeValue: medianSunriseSunset.getTime(),
-    //       rightTimeValue: sunsetDateMs,
-    //       leftLinearValue: sunriseHighest,
-    //       rightLinearValue: 0,
-    //       timeToBeInterpolated: currentDateMs,
-    //     };
-    //   }
+    let pathSelection = null;
+    if (currentDateMs < sunriseDateMs) {
+      pathSelection = svg.select("#startToSunrise");
+    } else if (currentDateMs < sunsetDateMs) {
+      pathSelection = svg.select("#sunriseToSunset");
+    } else {
+      pathSelection = svg.select("#sunsetToEnd");
+    }
+
+    const curvedCoordinates = defaultToCurveCoordinates({
+      pathSelection: pathSelection,
+      xScale,
+      yScale,
+      y: interpolatedY,
+      x: currentDate,
+    });
+    // const data = [leftObject, rightObject];
+
+    // const path = svg.select("#sunriseToSunset");
+    // const pathLength = path.node().getTotalLength();
+
+    // const coordinates = [];
+
+    // for (let i = 0; i <= pathLength; i += 10) {
+    //   const point = path.node().getPointAtLength(i);
+    //   coordinates.push([point.x, point.y]);
     // }
 
-    // interpolatedY = interpolateTimeToLinear(interpolateArguments);
+    // console.log(coordinates);
+    // const specificPoint = [xScale(currentDate), yScale(interpolatedY)];
+    // const closestPoint =
+    //   coordinates[
+    //     d3.scan(coordinates, function (d) {
+    //       const dx = d[0] - specificPoint[0],
+    //         dy = d[1] - specificPoint[1];
+    //       return Math.sqrt(dx * dx + dy * dy);
+    //     })
+    //   ];
+    // console.log(closestPoint);
+    // console.log(xScale(currentDate), yScale(interpolatedY));
 
-    // svg
-    //   .select("#currentIcon")
-    //   .attr("transform", `translate(${xScale(currentDate)}, ${interpolatedY})`);
+    const currentIcon = svg.select("#currentIcon");
+
+    const currentIconBounds = currentIcon.node().getBBox();
+
+    currentIcon.attr(
+      "transform",
+      `translate(${curvedCoordinates[0] - currentIconBounds.width / 2}, ${
+        curvedCoordinates[1] - currentIconBounds.height / 2
+      })`
+    );
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -331,7 +328,7 @@ const SunsetSunriseChart = ({
     >
       <g id="sunriseDateMs-g">
         <text id="sunriseDateMs" className="text-sm fill-gray-c2">
-          sunriseDateMs
+          Sunrise
         </text>
         <text id="sunriseTime" className="text-md fill-gray-c3">
           {format(sunriseDateMs, "hh:mm a")}
@@ -339,7 +336,7 @@ const SunsetSunriseChart = ({
       </g>
       <g id="sunsetDateMs-g">
         <text id="sunsetDateMs" className="text-sm fill-gray-c2">
-          sunsetDateMs
+          Sunset
         </text>
         <text id="sunsetTime" className="text-md fill-gray-c3">
           {format(sunsetDateMs, "hh:mm a")}
@@ -363,9 +360,13 @@ const SunsetSunriseChart = ({
         id="sunsetLine"
         className=" stroke-gray-c2 stroke-dash-line stroke-2"
       ></path>
-      {/* <g id="currentIcon">
+      <g id="currentIcon">
         <WeatherIcon weather={weather} size="2xsm" className="fill-slate-100" />
-      </g> */}
+      </g>
+      <path
+        id="lineG"
+        className="fill-none stroke-black stroke-dash-line stroke-2"
+      ></path>
     </svg>
   );
 };
