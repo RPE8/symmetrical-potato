@@ -23,8 +23,9 @@ interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {}
 
+// ForwardRef is used for Radix UI
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  // spread props for Radix UI
+  // spread `...props` for Radix UI
   ({ variant, size, children, ...props }, ref) => {
     return (
       <button
