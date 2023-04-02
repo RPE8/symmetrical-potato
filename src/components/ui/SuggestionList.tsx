@@ -3,7 +3,7 @@ import { HTMLAttributes, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 const suggestionListVariants = cva(
-  "px-4 py-2 bg-gray-c1 absolute border border-c3 border-t-0",
+  "px-4 py-2 bg-gray-c1 dark:bg-black-c1 absolute border border-gray-c2 dark:border-black-c3 border-t-0 rounded-md",
   {
     variants: {
       fullWidth: {
@@ -14,14 +14,14 @@ const suggestionListVariants = cva(
 );
 
 const suggestionItemVariants = cva(
-  "text-gray-c4 hover:bg-gray-c2 cursor-pointer my-2",
+  "text-gray-c3 dark:text-black-c3 hover:bg-gray-c1.1 dark:hover:bg-black-c1.1 rounded-sm cursor-pointer my-2 px-2",
   {
     variants: {
       active: {
         true: "",
       },
       loading: {
-        true: "animate-pulse bg-gray-c2 h-5 rounded-md",
+        true: "animate-pulse bg-gray-c2 dark:bg-black-c2 h-5 rounded-md",
       },
     },
     defaultVariants: {

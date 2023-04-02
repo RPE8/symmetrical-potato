@@ -19,12 +19,12 @@ const divVariants = cva("relative", {
 });
 
 const inputVariants = cva(
-  "placeholder:text-gray-c2 font-weight-400 focus-visible:outline-none text-base font-normal bg-transparent",
+  "placeholder:text-gray-c2 dark:placeholder:text-black-c2 font-weight-400 focus-visible:outline-none text-base font-normal bg-transparent",
   {
     variants: {
       intent: {
-        primary: "text-gray-c4",
-        secondary: "text-gray-c3",
+        primary: "text-gray-c3 dark:text-black-c3",
+        secondary: "text-gray-c3 dark:text-black-c3",
       },
       fullWidth: {
         true: "w-full",

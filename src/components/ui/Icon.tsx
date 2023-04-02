@@ -4,6 +4,7 @@ import {
   Cloudy,
   Search,
   Sun,
+  Moon,
   CloudRain,
   CloudSnow,
   CloudFog,
@@ -24,10 +25,11 @@ export type IconName =
   | "CloudSnow"
   | "CloudFog"
   | "CloudLightning"
-  | "CloudDrizzle";
+  | "CloudDrizzle"
+  | "Moon";
 export type Icons = Record<IconName, Icon>;
 
-export const Icons = {
+export const Icons: Icons = {
   Cloudy,
   CloudRain,
   CloudSnow,
@@ -36,6 +38,7 @@ export const Icons = {
   CloudFog,
   CloudLightning,
   CloudDrizzle,
+  Moon,
 };
 
 export const sizes = {

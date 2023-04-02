@@ -355,9 +355,18 @@ const SunsetSunriseChart = ({
       <text id="horizon" className="text-sm fill-gray-c2">
         Horizon
       </text>
-      <path id="startToSunrise" className="fill-blue-900"></path>
-      <path id="sunriseToSunset" className=" fill-blue-300"></path>
-      <path id="sunsetToEnd" className="fill-blue-900"></path>
+      <path
+        id="startToSunrise"
+        className="fill-blue-900 dark:fill-[#3b4c77]"
+      ></path>
+      <path
+        id="sunriseToSunset"
+        className=" fill-blue-300 dark:fill-[#3c6baf]"
+      ></path>
+      <path
+        id="sunsetToEnd"
+        className="fill-blue-900 dark:fill-[#3b4c77]"
+      ></path>
       <path
         id="horizontalLine"
         className=" stroke-gray-c2 stroke-dash-line stroke-2"

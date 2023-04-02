@@ -1,11 +1,16 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { ThemeProvider } from "next-themes";
 
 import { WeatherContextProvider } from "@/context/WeatherContext";
 
 const Providers = ({ children }: { children: ReactNode }) => {
-  return <WeatherContextProvider>{children}</WeatherContextProvider>;
+  return (
+    <ThemeProvider attribute="class">
+      <WeatherContextProvider>{children}</WeatherContextProvider>
+    </ThemeProvider>
+  );
 };
 
 export default Providers;

@@ -8,7 +8,7 @@ const weatherMainBlock = cva("flex flex-col items-center my-10");
 const weatherIconVariants = cva("", {
   variants: {
     loading: {
-      true: "h-32 w-32 animate-pulse bg-gray-c2 rounded-full",
+      true: "h-32 w-32 animate-pulse bg-gray-c2 dark:bg-black-c2 rounded-full",
     },
   },
   defaultVariants: {
@@ -16,27 +16,33 @@ const weatherIconVariants = cva("", {
   },
 });
 
-const locationVariants = cva("text-3xl font-bold my-5", {
-  variants: {
-    loading: {
-      true: "animate-pulse bg-gray-c2 rounded-md w-32",
+const locationVariants = cva(
+  "text-3xl font-bold my-5 text-gray-c4 dark:text-gray-c3",
+  {
+    variants: {
+      loading: {
+        true: "animate-pulse bg-gray-c2 dark:bg-black-c2 rounded-md w-32",
+      },
     },
-  },
-  defaultVariants: {
-    loading: false,
-  },
-});
+    defaultVariants: {
+      loading: false,
+    },
+  }
+);
 
-const temperatureVariants = cva("text-5xl fond-semibold", {
-  variants: {
-    loading: {
-      true: "animate-pulse bg-gray-c2 rounded-md w-32",
+const temperatureVariants = cva(
+  "text-5xl fond-semibold text-gray-c4 dark:text-gray-c3",
+  {
+    variants: {
+      loading: {
+        true: "animate-pulse bg-gray-c2 dark:bg-black-c2 rounded-md w-32",
+      },
     },
-  },
-  defaultVariants: {
-    loading: false,
-  },
-});
+    defaultVariants: {
+      loading: false,
+    },
+  }
+);
 
 interface WeatherMainBlockProps {
   weather?: Weather;
@@ -75,6 +81,7 @@ const WeatherMainBlock = ({
         {weather && (
           <WeatherIcon
             weather={weather}
+            variant="outline"
             className={twMerge(weatherIconVariants({}))}
           />
         )}

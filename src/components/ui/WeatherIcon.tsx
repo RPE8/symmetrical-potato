@@ -10,8 +10,9 @@ import { twMerge } from "tailwind-merge";
 const weatherIconVariants = cva("", {
   variants: {
     variant: {
-      filled: "fill-slate-100",
-      outline: "bg-transparent text-gray-c2",
+      filled:
+        "fill-gray-c1 dark:fill-black-c1 stroke-gray-c4 dark:stroke-gray-c3",
+      outline: "bg-transparent text-gray-c4 dark:text-gray-c3",
       default: "bg-transparent",
     },
     size: sizes,

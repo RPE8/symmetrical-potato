@@ -2,11 +2,11 @@ import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
 const WeatherBlockContainerVariants = cva(
-  "flex flex-col bg-gray-c1 rounded-2xl px-5 py-2 my-3 ",
+  "flex flex-col bg-gray-c1 rounded-2xl px-5 py-2 my-3 dark:bg-black-c1",
   {
     variants: {
       loading: {
-        true: "animate-pulse bg-gray-c2 rounded-md h-32",
+        true: "animate-pulse bg-gray-c2 dark:bg-black-c2 rounded-md h-32",
       },
     },
     defaultVariants: {
