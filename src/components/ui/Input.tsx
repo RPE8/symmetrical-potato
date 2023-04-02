@@ -1,5 +1,7 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
+import type { Suggestion } from "@/components/ui/SuggestionList";
+import SuggestionList from "@/components/ui/SuggestionList";
 import {
   InputHTMLAttributes,
   forwardRef,
@@ -7,35 +9,6 @@ import {
   useRef,
   useEffect,
 } from "react";
-
-const suggestionListVariants = cva(
-  "px-4 py-2 bg-gray-c1 absolute border border-c3 border-t-0",
-  {
-    variants: {
-      fullWidth: {
-        true: "w-full",
-      },
-    },
-  }
-);
-
-const suggestionItemVariants = cva(
-  "text-gray-c4 hover:bg-gray-c2 cursor-pointer my-2",
-  {
-    variants: {
-      active: {
-        true: "",
-      },
-      loading: {
-        true: "animate-pulse bg-gray-c2 rounded-md",
-      },
-    },
-    defaultVariants: {
-      active: true,
-      loading: false,
-    },
-  }
-);
 
 const divVariants = cva("relative", {
   variants: {
@@ -63,11 +36,6 @@ const inputVariants = cva(
   }
 );
 
-type Suggestion = {
-  name: string;
-  id: string;
-};
-
 interface InputProps
   extends InputHTMLAttributes<HTMLInputElement>,
     VariantProps<typeof inputVariants> {
@@ -76,12 +44,14 @@ interface InputProps
   isLoading?: boolean;
 }
 
+// ForwardRef is used for Radix UI
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
+    // spread `...props` for Radix UI
     {
       className,
       intent,
-      fullWidth = false,
+      fullWidth,
       suggestions,
       onSuggestionClick,
       isLoading = false,
@@ -89,8 +59,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const [isFocused, setIsFocused] = useState(false);
+    const [isFocused, setIsFocused] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
+
+    // cva return boolean | null. Which is not compatible with boolean | undefined
+    fullWidth = fullWidth || undefined;
 
     // ref is for Radix UI
     // inputRef for iternal use
@@ -104,10 +77,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       }
     };
 
-    suggestions ??= [];
-
+    // Setting suggestion to Array means that they shoudl be displayed, but there might be no suggestions
+    // If suggestions is not an Array, it means that they shouldn't be displayed
     const isDisplaySuggestions =
-      (isLoading || suggestions.length > 0) && isFocused;
+      Array.isArray(suggestions) &&
+      (isLoading || suggestions.length > 0) &&
+      isFocused;
 
     const handleFocus = () => {
       setIsFocused(true);
@@ -132,59 +107,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           className={twMerge(className, inputVariants({ intent, fullWidth }))}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          //   remove browser autocomplete
           autoComplete="off"
           {...props}
         />
         {isDisplaySuggestions && (
-          <ul
-            className={twMerge(
-              suggestionListVariants({
-                fullWidth,
-              })
-            )}
-          >
-            {suggestions.length > 0 ? (
-              suggestions.map((suggestion) => (
-                <li
-                  key={suggestion.id}
-                  className={twMerge(
-                    suggestionItemVariants({ loading: isLoading })
-                  )}
-                  onMouseDown={() => {
-                    if (onSuggestionClick) {
-                      onSuggestionClick(suggestion);
-                    }
-                  }}
-                >
-                  {suggestion.name}
-                </li>
-              ))
-            ) : (
-              <>
-                <li
-                  className={twMerge(
-                    suggestionItemVariants({ loading: isLoading })
-                  )}
-                >
-                  &nbsp;
-                </li>
-                <li
-                  className={twMerge(
-                    suggestionItemVariants({ loading: isLoading })
-                  )}
-                >
-                  &nbsp;
-                </li>
-                <li
-                  className={twMerge(
-                    suggestionItemVariants({ loading: isLoading })
-                  )}
-                >
-                  &nbsp;
-                </li>
-              </>
-            )}
-          </ul>
+          <SuggestionList
+            fullWidth={fullWidth}
+            isLoading={isLoading}
+            suggestions={suggestions}
+            onSuggestionClick={onSuggestionClick}
+          />
         )}
       </div>
     );
