@@ -50,7 +50,6 @@ export default function WeatherIcon({
   className,
   ...props
 }: IconProps) {
-  debugger;
   if (!validWeatherValues.includes(weather)) {
     throw new Error(`Invalid weather value: ${weather}`);
   }
