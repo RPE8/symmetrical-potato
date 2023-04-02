@@ -1,6 +1,6 @@
 "use client";
 
-import { HTMLAttributes, useContext, useEffect } from "react";
+import { HTMLAttributes, useContext } from "react";
 
 import WeatherMainBlock from "@/components/WeatherMainBlock";
 import WeatherAdditionalInfo from "@/components/WeatherAdditionaInfoBlock";
@@ -13,7 +13,7 @@ import kelvinToCelsium from "@/utils/kelvinToCelsium";
 interface MainProps extends HTMLAttributes<HTMLElement> {}
 
 const Main = ({}: MainProps) => {
-  const { state, dispatch } = useContext(WeatherContext);
+  const { state } = useContext(WeatherContext);
 
   const { data, isError, isLoading } = useWeather(state.location);
 
